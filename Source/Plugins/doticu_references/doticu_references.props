@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <skse>$(ProjectDir)\..\..\..\..\skse 2.0.19;$(ProjectDir)\..\..\..\..\skse 2.0.19\skse64</skse>
+    <doticu_skylib>$(ProjectDir)\..\..\..\..\doticu_skylib\Source\Plugins\doticu_skylib</doticu_skylib>
+    <skse_lib_dir>$(skse)\x64_v140\Release;$(skse)\x64\Release</skse_lib_dir>
+    <skse_lib>common_vc14.lib;skse64_common.lib;skse64_1_5_97.lib;</skse_lib>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemDefinitionGroup />
+  <ItemGroup>
+    <BuildMacro Include="skse">
+      <Value>$(skse)</Value>
+    </BuildMacro>
+    <BuildMacro Include="doticu_skylib">
+      <Value>$(doticu_skylib)</Value>
+    </BuildMacro>
+    <BuildMacro Include="skse_lib_dir">
+      <Value>$(skse_lib_dir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="skse_lib">
+      <Value>$(skse_lib)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>
