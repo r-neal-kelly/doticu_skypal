@@ -6,6 +6,12 @@
 
 #include "skse64_common/skse_version.h"
 
+#include "doticu_skylib/form_type.h"
+#include "doticu_skylib/keyword.h"
+#include "doticu_skylib/reference.h"
+
+#include "doticu_skylib/virtual_macros.h"
+
 #include "doticu_references/intrinsic.h"
 #include "doticu_references/main.h"
 
@@ -13,7 +19,6 @@ namespace doticu_references {
 
     const   SKSEInterface*          Main_t::SKSE                = nullptr;
     const   SKSEPapyrusInterface*   Main_t::SKSE_PAPYRUS        = nullptr;
-    const   SKSEMessagingInterface* Main_t::SKSE_MESSAGING      = nullptr;
             PluginHandle            Main_t::SKSE_PLUGIN_HANDLE  = 0;
             IDebugLog               Main_t::SKSE_LOG;
 
@@ -32,9 +37,66 @@ namespace doticu_references {
     Bool_t Main_t::SKSE_Load_Plugin(const SKSEInterface* skse)
     {
         SKSE_LOG.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\Skyrim Special Edition\\SKSE\\doticu_references.log");
-        SKYLIB_LOG("working.");
+
+        if (skse) {
+            SKSE = skse;
+            SKSE_PAPYRUS = static_cast<const SKSEPapyrusInterface*>(SKSE->QueryInterface(kInterface_Papyrus));
+            SKSE_PLUGIN_HANDLE = SKSE->GetPluginHandle();
+            if (SKSE_PAPYRUS) {
+                if (SKSE_PAPYRUS->Register(reinterpret_cast<Bool_t(*)(skylib::Virtual::Registry_t*)>(SKSE_Register_Functions))) {
+                    return true;
+                } else {
+                    _FATALERROR("Unable to register functions.");
+                    return false;
+                }
+            } else {
+                _FATALERROR("Unable to get papyrus and/or messaging interface.");
+                return false;
+            }
+        } else {
+            _FATALERROR("Unable to get skse interface.");
+            return false;
+        }
+    }
+
+    Bool_t Main_t::SKSE_Register_Functions(skylib::Virtual::Machine_t* machine)
+    {
+        #define REGISTER(TYPE_)                         \
+        SKYLIB_M                                        \
+            TYPE_::Register_Me(machine);                \
+            _MESSAGE("Added " #TYPE_ " functions.");    \
+        SKYLIB_W
+
+        REGISTER(Main_t);
+
+        #undef REGISTER
+
+        _MESSAGE("Added all functions.\n");
 
         return true;
+    }
+
+    String_t Main_t::Class_Name()
+    {
+        DEFINE_CLASS_NAME("doticu_references");
+    }
+
+    void Main_t::Register_Me(skylib::Virtual::Machine_t* machine)
+    {
+        #define STATIC(STATIC_NAME_, ARG_COUNT_, RETURN_TYPE_, STATIC_, ...)    \
+        SKYLIB_M                                                                \
+            BIND_STATIC(machine, Class_Name(),                                  \
+                        STATIC_NAME_, ARG_COUNT_,                               \
+                        RETURN_TYPE_, STATIC_, __VA_ARGS__);                    \
+        SKYLIB_W
+
+        STATIC("Lookup", 2, Vector_t<Reference_t*>, Lookup, Vector_t<Int_t>, Vector_t<Keyword_t*>);
+    }
+
+    Vector_t<Reference_t*> Main_t::Lookup(Vector_t<Int_t> form_types, Vector_t<Keyword_t*> keywords)
+    {
+        Vector_t<Reference_t*> results;
+        return results;
     }
 
 }

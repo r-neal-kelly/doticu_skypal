@@ -2,4 +2,4 @@
 
 Scriptname doticu_references hidden
 
-ObjectReference[] function Lookup(int[] form_types, Keyword[] keywords) native
+ObjectReference[] function Lookup(int[] form_types, Keyword[] keywords) native global
