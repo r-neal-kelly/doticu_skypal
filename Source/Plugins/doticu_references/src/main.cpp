@@ -64,14 +64,14 @@ namespace doticu_references {
         #define REGISTER(TYPE_)                         \
         SKYLIB_M                                        \
             TYPE_::Register_Me(machine);                \
-            _MESSAGE("Added " #TYPE_ " functions.");    \
+            SKYLIB_LOG("Added " #TYPE_ " functions.");    \
         SKYLIB_W
 
         REGISTER(Main_t);
 
         #undef REGISTER
 
-        _MESSAGE("Added all functions.\n");
+        SKYLIB_LOG("Added all functions.\n");
 
         return true;
     }
