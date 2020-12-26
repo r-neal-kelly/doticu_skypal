@@ -43,7 +43,7 @@ namespace doticu_references {
             SKSE_PAPYRUS = static_cast<const SKSEPapyrusInterface*>(SKSE->QueryInterface(kInterface_Papyrus));
             SKSE_PLUGIN_HANDLE = SKSE->GetPluginHandle();
             if (SKSE_PAPYRUS) {
-                if (SKSE_PAPYRUS->Register(reinterpret_cast<Bool_t(*)(skylib::Virtual::Registry_t*)>(SKSE_Register_Functions))) {
+                if (SKSE_PAPYRUS->Register(reinterpret_cast<SKSEPapyrusInterface::RegisterFunctions>(SKSE_Register_Functions))) {
                     return true;
                 } else {
                     _FATALERROR("Unable to register functions.");
