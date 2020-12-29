@@ -6,6 +6,8 @@
 
 #include "skse64/PluginAPI.h"
 
+#include "doticu_skylib/form_type.h"
+
 #include "doticu_references/intrinsic.h"
 
 namespace doticu_references {
@@ -28,7 +30,25 @@ namespace doticu_references {
         static void     Register_Me(skylib::Virtual::Machine_t* machine);
 
     public:
-        static Vector_t<Reference_t*> Lookup(Vector_t<Int_t> form_types, Vector_t<Keyword_t*> keywords);
+        static Vector_t<Reference_t*>   Filter(Vector_t<Form_Type_e> form_types);
+        static Vector_t<Reference_t*>   Filter_Grid(Vector_t<Form_Type_e> form_types);
+
+    public:
+        static void Global_For_Each(Vector_t<Reference_t*> ureferences,
+                                    String_t script_name,
+                                    String_t global_name);
+        static void Form_For_Each(Vector_t<Reference_t*> ureferences,
+                                  String_t script_name,
+                                  String_t method_name,
+                                  Form_t* on_this);
+        static void Alias_For_Each(Vector_t<Reference_t*> ureferences,
+                                   String_t script_name,
+                                   String_t method_name,
+                                   Alias_Base_t* on_this);
+        static void Active_Magic_Effect_For_Each(Vector_t<Reference_t*> ureferences,
+                                                 String_t script_name,
+                                                 String_t method_name,
+                                                 Active_Magic_Effect_t* on_this);
     };
 
 }
