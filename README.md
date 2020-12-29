@@ -22,3 +22,6 @@
     ; Or just get references on the player grid (the uGridsToLoad ini setting)
     ObjectReference[] nearby_player = doticu_references.Filter_Grid(form_types)
 ```
+
+### Notes:
+You don't need to use the .esp file or the test Papyrus script. Only the .dll and the "doticu_references" script are necessary.
