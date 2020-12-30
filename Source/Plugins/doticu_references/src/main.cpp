@@ -6,12 +6,19 @@
 
 #include "skse64_common/skse_version.h"
 
-#include "doticu_skylib/form_type.h"
 #include "doticu_skylib/interface.h"
+
+#include "doticu_skylib/component_keywords.h"
+
+#include "doticu_skylib/form.h"
+#include "doticu_skylib/form_type.h"
+#include "doticu_skylib/game.inl"
 #include "doticu_skylib/keyword.h"
 #include "doticu_skylib/reference.h"
 
 #include "doticu_skylib/virtual_macros.h"
+
+#include "doticu_skylib/filter_keyword.h"
 
 #include "doticu_references/intrinsic.h"
 #include "doticu_references/main.h"
@@ -91,13 +98,57 @@ namespace doticu_references {
                         RETURN_TYPE_, STATIC_, __VA_ARGS__);                    \
         SKYLIB_W
 
-        STATIC("Filter",        1,  Vector_t<Reference_t*>, Filter,         Vector_t<Form_Type_e>);
-        STATIC("Filter_Grid",   1,  Vector_t<Reference_t*>, Filter_Grid,    Vector_t<Form_Type_e>);
+        STATIC("Filter",        1,  Vector_t<Reference_t*>,     Filter,             Vector_t<Form_Type_e>);
+        STATIC("Filter_Grid",   1,  Vector_t<Reference_t*>,     Filter_Grid,        Vector_t<Form_Type_e>);
+
+        STATIC("Filter_Keywords", 4, Vector_t<Reference_t*>, Filter_Keywords, Vector_t<Reference_t*>, Vector_t<Keyword_t*>, String_t, Bool_t);
 
         STATIC("Global_For_Each",               3,  void,   Global_For_Each,                Vector_t<Reference_t*>, String_t, String_t);
         STATIC("Form_For_Each",                 4,  void,   Form_For_Each,                  Vector_t<Reference_t*>, String_t, String_t, Form_t*);
         STATIC("Alias_For_Each",                4,  void,   Alias_For_Each,                 Vector_t<Reference_t*>, String_t, String_t, Alias_Base_t*);
         STATIC("Active_Magic_Effect_For_Each",  4,  void,   Active_Magic_Effect_For_Each,   Vector_t<Reference_t*>, String_t, String_t, Active_Magic_Effect_t*);
+    }
+
+    static Vector_t<some<Reference_t*>> Valid_References(Vector_t<Reference_t*>& ureferences)
+    {
+        Vector_t<some<Reference_t*>> results;
+
+        size_t ureference_count = ureferences.size();
+        results.reserve(ureference_count);
+        for (Index_t idx = 0, end = ureference_count; idx < end; idx += 1) {
+            Reference_t* ureference = ureferences[idx];
+            if (ureference && ureference->Is_Valid()) {
+                results.push_back(ureference);
+            }
+        }
+
+        return results;
+    }
+
+    static Vector_t<some<Keyword_t*>> Valid_Keywords(Vector_t<Keyword_t*>& items)
+    {
+        Vector_t<some<Keyword_t*>> results;
+
+        size_t count = items.size();
+        results.reserve(count);
+        for (Index_t idx = 0, end = count; idx < end; idx += 1) {
+            Keyword_t* item = items[idx];
+            if (item && item->Is_Valid()) {
+                results.push_back(item);
+            }
+        }
+
+        return results;
+    }
+
+    static Logic_Gate_e To_Logic_Gate(String_t mode)
+    {
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode.data);
+        if (logic_gate != Logic_Gate_e::OR && logic_gate != Logic_Gate_e::AND && logic_gate != Logic_Gate_e::XOR) {
+            return Logic_Gate_e::OR;
+        } else {
+            return logic_gate;
+        }
     }
 
     class Loaded_References_Filter_t : public Filter_i<some<Reference_t*>>
@@ -144,20 +195,25 @@ namespace doticu_references {
         return *reinterpret_cast<Vector_t<Reference_t*>*>(&Reference_t::Loaded_References_In_Grid(&filter));
     }
 
-    static Vector_t<some<Reference_t*>> Valid_User_References(Vector_t<Reference_t*>& ureferences)
+    Vector_t<Reference_t*> Main_t::Filter_Keywords(Vector_t<Reference_t*> user_references,
+                                                   Vector_t<Keyword_t*> user_keywords,
+                                                   String_t mode,
+                                                   Bool_t do_negate)
     {
-        Vector_t<some<Reference_t*>> results;
+        Vector_t<some<Reference_t*>> read = Valid_References(user_references);
+        Vector_t<some<Reference_t*>> write;
+        F::State_c<some<Reference_t*>> filter_state(&read, &write);
 
-        size_t ureference_count = ureferences.size();
-        results.reserve(ureference_count);
-        for (Index_t idx = 0, end = ureference_count; idx < end; idx += 1) {
-            Reference_t* ureference = ureferences[idx];
-            if (ureference && ureference->Is_Valid()) {
-                results.push_back(ureference);
-            }
+        Logic_Gate_e logic_gate = To_Logic_Gate(mode);
+        if (logic_gate == Logic_Gate_e::OR) {
+            F::Keywords_t<some<Reference_t*>>(filter_state).Filter<Logic_Gate_e::OR>(Valid_Keywords(user_keywords), do_negate);
+        } else if (logic_gate == Logic_Gate_e::AND) {
+            F::Keywords_t<some<Reference_t*>>(filter_state).Filter<Logic_Gate_e::AND>(Valid_Keywords(user_keywords), do_negate);
+        } else if (logic_gate == Logic_Gate_e::XOR) {
+            F::Keywords_t<some<Reference_t*>>(filter_state).Filter<Logic_Gate_e::XOR>(Valid_Keywords(user_keywords), do_negate);
         }
 
-        return results;
+        return *reinterpret_cast<Vector_t<Reference_t*>*>(filter_state.Results());
     }
 
     class For_Each_Arguments_t : public V::Arguments_t
@@ -225,7 +281,7 @@ namespace doticu_references {
         };
 
         if (script_name && global_name) {
-            const Vector_t<some<Reference_t*>> references = Valid_User_References(ureferences);
+            const Vector_t<some<Reference_t*>> references = Valid_References(ureferences);
             const Int_t index = 0;
             const size_t reference_count = references.size();
             if (index < reference_count) {
@@ -296,7 +352,7 @@ namespace doticu_references {
         };
 
         if (script_name && method_name && scriptable) {
-            const Vector_t<some<Reference_t*>> references = Valid_User_References(ureferences);
+            const Vector_t<some<Reference_t*>> references = Valid_References(ureferences);
             const Int_t index = 0;
             const size_t reference_count = references.size();
             if (index < reference_count) {

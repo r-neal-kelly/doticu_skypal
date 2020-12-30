@@ -33,6 +33,11 @@ namespace doticu_references {
         static Vector_t<Reference_t*>   Filter(Vector_t<Form_Type_e> form_types);
         static Vector_t<Reference_t*>   Filter_Grid(Vector_t<Form_Type_e> form_types);
 
+        static Vector_t<Reference_t*>   Filter_Keywords(Vector_t<Reference_t*> user_references,
+                                                        Vector_t<Keyword_t*> user_keywords,
+                                                        String_t mode,
+                                                        Bool_t do_negate = false);
+
     public:
         static void Global_For_Each(Vector_t<Reference_t*> ureferences,
                                     String_t script_name,

@@ -2,18 +2,45 @@
 
 Scriptname doticu_references_test extends Quest
 
+Keyword property keyword_JobMerchant auto
+Keyword property keyword_WeapTypeSword auto
+
 ; Runs only once.
 event OnInit()
-    Test_Filter()
-    Test_Filter_Grid()
-    Test_Filter_Grid_Actor()
-    Test_Filter_Grid_Flora()
-    Test_Filter_Grid_Actor_Flora()
-    Test_Global_For_Each()
-    Test_Form_For_Each()
+    Test_Filter_Keywords();
+    ;Test_Filter()
+    ;Test_Filter_Grid()
+    ;Test_Filter_Grid_Actor()
+    ;Test_Filter_Grid_Flora()
+    ;Test_Filter_Grid_Actor_Flora()
+    ;Test_Global_For_Each()
+    ;Test_Form_For_Each()
 endEvent
 
 ; tests
+function Test_Filter_Keywords()
+    Debug.Trace("Begin: Test_Filter_Keywords")
+
+    ObjectReference[] all = All_References()
+    Keyword[] keywords = new Keyword[2]
+
+    keywords[0] = keyword_WeapTypeSword
+    Trace_References(doticu_references.Filter_Keywords(all, keywords, "or", false), 15)
+    Trace_References(doticu_references.Filter_Keywords(all, keywords, "or", true), 15)
+
+    keywords[0] = keyword_JobMerchant
+    Trace_References(doticu_references.Filter_Keywords(all, keywords, "or", false), 15)
+    Trace_References(doticu_references.Filter_Keywords(all, keywords, "or", true), 15)
+
+    keywords[0] = keyword_WeapTypeSword
+    keywords[1] = keyword_JobMerchant
+    Trace_References(doticu_references.Filter_Keywords(all, keywords, "or", false), 15)
+    Trace_References(doticu_references.Filter_Keywords(all, keywords, "and", false), 15)
+    Trace_References(doticu_references.Filter_Keywords(all, keywords, "and", true), 15)
+    
+    Debug.Trace("End: Test_Filter_Keywords")
+endFunction
+
 function Test_Filter() global
     Debug.Trace("Begin: Test_Filter")
 
@@ -118,6 +145,13 @@ bool function My_Method_Callback(ObjectReference reference, int index, int end);
 endFunction
 
 ; helpers
+ObjectReference[] function All_References()
+    int[] form_types = new int[1]
+    form_types[0] = 0; the 'NONE' or 'FORM' form type, which filters for everything
+
+    return doticu_references.Filter(form_types)
+endFunction
+
 function Trace_References(ObjectReference[] references, int MAX_TO_DISPLAY = 50) global
     Debug.Trace("    total: " + references.length + ". Will only show up to " + MAX_TO_DISPLAY + " refs.")
 

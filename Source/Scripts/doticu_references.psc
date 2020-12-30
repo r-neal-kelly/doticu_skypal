@@ -2,12 +2,20 @@
 
 Scriptname doticu_references hidden
 
+; needs an All References func
+
 ; You can filter for however many types you want. Checks the reference and the base.
 ; If you have '0' anywhere in the array, you will get all available references, making all other elements in the array irrelevant.
 ObjectReference[] function Filter(int[] form_types) native global
 
 ; You can restrict your filter to the currently loaded cell grid around the player. (This dynamically checks uGridsToLoad.)
 ObjectReference[] function Filter_Grid(int[] form_types) native global
+
+; Possible modes are "AND", "OR", AND "XOR".
+; With do_negate toggled, "AND" == "NAND", "OR" == "NOR", and "XOR" == "XNOR".
+; XOR will pass references that match exactly one element.
+; Mode is case insensitive and matches only the first necessary letters, e.g. "oRdAIn da YARL" == "OR". If nothing matches, defaults to "OR".
+ObjectReference[] function Filter_Keywords(ObjectReference[] references, Keyword[] keywords, string mode = "OR", bool do_negate = false) native global
 
 ; It may actually be faster to let C++ iterate and invoke your callback per reference. Return true to keep iterating or false to stop.
 ; Callback should look like: "bool function My_Global_Callback(ObjectReference reference, int index, int end) global"
