@@ -33,10 +33,14 @@ namespace doticu_references {
         static Vector_t<Reference_t*>   Filter(Vector_t<Form_Type_e> form_types);
         static Vector_t<Reference_t*>   Filter_Grid(Vector_t<Form_Type_e> form_types);
 
-        static Vector_t<Reference_t*>   Filter_Keywords(Vector_t<Reference_t*> user_references,
-                                                        Vector_t<Keyword_t*> user_keywords,
-                                                        String_t mode,
+        static Vector_t<Reference_t*>   Filter_Keywords(Vector_t<Reference_t*> references,
+                                                        Vector_t<Keyword_t*> keywords,
+                                                        String_t mode = "OR",
                                                         Bool_t do_negate = false);
+        static Vector_t<Reference_t*>   Filter_Distance(Vector_t<Reference_t*> references,
+                                                        Float_t distance,
+                                                        Reference_t* from = nullptr,
+                                                        String_t mode = "<");
 
     public:
         static void Global_For_Each(Vector_t<Reference_t*> ureferences,

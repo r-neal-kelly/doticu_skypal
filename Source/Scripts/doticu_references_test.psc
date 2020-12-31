@@ -7,7 +7,8 @@ Keyword property keyword_WeapTypeSword auto
 
 ; Runs only once.
 event OnInit()
-    Test_Filter_Keywords();
+    Test_Filter_Keywords()
+    Test_Filter_Distance()
     ;Test_Filter()
     ;Test_Filter_Grid()
     ;Test_Filter_Grid_Actor()
@@ -20,25 +21,64 @@ endEvent
 ; tests
 function Test_Filter_Keywords()
     Debug.Trace("Begin: Test_Filter_Keywords")
+    Debug.Trace("")
 
-    ObjectReference[] all = All_References()
+    ObjectReference[] all_refs = All_References()
     Keyword[] keywords = new Keyword[2]
 
     keywords[0] = keyword_WeapTypeSword
-    Trace_References(doticu_references.Filter_Keywords(all, keywords, "or", false), 15)
-    Trace_References(doticu_references.Filter_Keywords(all, keywords, "or", true), 15)
+    Debug.Trace("    (all_refs, WeapTypeSword, or, dont_negate)")
+    Trace_References(doticu_references.Filter_Keywords(all_refs, keywords, "or", false), 15)
+    Debug.Trace("")
+    Debug.Trace("    (all_refs, WeapTypeSword, or, do_negate)")
+    Trace_References(doticu_references.Filter_Keywords(all_refs, keywords, "or", true), 15)
+    Debug.Trace("")
 
     keywords[0] = keyword_JobMerchant
-    Trace_References(doticu_references.Filter_Keywords(all, keywords, "or", false), 15)
-    Trace_References(doticu_references.Filter_Keywords(all, keywords, "or", true), 15)
+    Debug.Trace("    (all_refs, JobMerchant, or, dont_negate)")
+    Trace_References(doticu_references.Filter_Keywords(all_refs, keywords, "or", false), 15)
+    Debug.Trace("")
+    Debug.Trace("    (all_refs, JobMerchant, or, do_negate)")
+    Trace_References(doticu_references.Filter_Keywords(all_refs, keywords, "or", true), 15)
+    Debug.Trace("")
 
     keywords[0] = keyword_WeapTypeSword
     keywords[1] = keyword_JobMerchant
-    Trace_References(doticu_references.Filter_Keywords(all, keywords, "or", false), 15)
-    Trace_References(doticu_references.Filter_Keywords(all, keywords, "and", false), 15)
-    Trace_References(doticu_references.Filter_Keywords(all, keywords, "and", true), 15)
+    Debug.Trace("    (all_refs, WeapTypeSword + JobMerchant, or, dont_negate)")
+    Trace_References(doticu_references.Filter_Keywords(all_refs, keywords, "or", false), 15)
+    Debug.Trace("")
+    Debug.Trace("    (all_refs, WeapTypeSword + JobMerchant, and, dont_negate)")
+    Trace_References(doticu_references.Filter_Keywords(all_refs, keywords, "and", false), 15)
+    Debug.Trace("")
+    Debug.Trace("    (all_refs, WeapTypeSword + JobMerchant, and, do_negate)")
+    Trace_References(doticu_references.Filter_Keywords(all_refs, keywords, "and", true), 15)
+    Debug.Trace("")
     
     Debug.Trace("End: Test_Filter_Keywords")
+    Debug.Trace("")
+endFunction
+
+function Test_Filter_Distance()
+    Debug.Trace("Begin: Test_Filter_Distance")
+    Debug.Trace("")
+
+    ObjectReference[] grid_refs = Grid_References()
+
+    Debug.Trace("    (grid_refs, 500.0, none, <)")
+    Trace_References(doticu_references.Filter_Distance(grid_refs, 500.0, none, "<"), 15)
+    Debug.Trace("")
+    Debug.Trace("    (grid_refs, 500.0, none, >)")
+    Trace_References(doticu_references.Filter_Distance(grid_refs, 500.0, none, ">"), 15)
+    Debug.Trace("")
+    Debug.Trace("    (grid_refs, 5000.0, none, <)")
+    Trace_References(doticu_references.Filter_Distance(grid_refs, 5000.0, none, "<"), 15)
+    Debug.Trace("")
+    Debug.Trace("    (grid_refs, 5000.0, none, >)")
+    Trace_References(doticu_references.Filter_Distance(grid_refs, 5000.0, none, ">"), 15)
+    Debug.Trace("")
+
+    Debug.Trace("End: Test_Filter_Distance")
+    Debug.Trace("")
 endFunction
 
 function Test_Filter() global
@@ -150,6 +190,12 @@ ObjectReference[] function All_References()
     form_types[0] = 0; the 'NONE' or 'FORM' form type, which filters for everything
 
     return doticu_references.Filter(form_types)
+endFunction
+
+ObjectReference[] function Grid_References()
+    int[] form_types = new int[1]
+    form_types[0] = 0
+    return doticu_references.Filter_Grid(form_types)
 endFunction
 
 function Trace_References(ObjectReference[] references, int MAX_TO_DISPLAY = 50) global

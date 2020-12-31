@@ -37,11 +37,13 @@ namespace doticu_references {
 
     using Form_Type_e           = skylib::Form_Type_e;
     using Logic_Gate_e          = skylib::Logic_Gate_e;
+    using Operator_e            = skylib::Operator_e;
 
     using Active_Magic_Effect_t = skylib::Active_Magic_Effect_t;
     using Alias_Base_t          = skylib::Alias_Base_t;
     using Form_t                = skylib::Form_t;
     using Keyword_t             = skylib::Keyword_t;
+    using Player_t              = skylib::Player_t;
     using Reference_t           = skylib::Reference_t;
 
     namespace V {
@@ -64,6 +66,8 @@ namespace doticu_references {
         template <typename T>
         using State_c           = skylib::Filter::State_c<T>;
 
+        template <typename T>
+        using Distances_t       = skylib::Filter::Distances_t<T>;
         template <typename T>
         using Keywords_t        = skylib::Filter::Keywords_t<T>;
 
