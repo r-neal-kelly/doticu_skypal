@@ -7,20 +7,16 @@
 
 ### Examples:
 ```Papyrus
-    ; You can filter for any number of form types
-    int[] form_types = new int[2]
+    ObjectReference property player auto
 
-    ; Using Reference form types
-    form_types[0] = 62; Actor, FormType.kCharacter
+    ; Gets all refs currently in the cell grid around the player
+    ObjectReference[] grid_refs = doticu_references.Grid()
 
-    ; And/or Base form types
-    form_types[1] = 39; Flora, FormType.kFlora
+    ; Filter out any refs that are 5000.0 or more units away from the player.
+    grid_refs = doticu_references.Filter_Distance(grid_refs, 5000.0, player, "<")
 
-    ; Get all loaded references in the entire game that are Actors or Flora
-    ObjectReference[] references = doticu_references.Filter(form_types)
-
-    ; Or just get references on the player grid (the uGridsToLoad ini setting)
-    ObjectReference[] nearby_player = doticu_references.Filter_Grid(form_types)
+    ; Sort them from close to far
+    grid_refs = doticu_references.Sort_Distance(grid_refs, none, "<")
 ```
 
 ### Notes:
