@@ -16,7 +16,7 @@
     grid_refs = doticu_references.Filter_Distance(grid_refs, 5000.0, player, "<")
 
     ; Sort them from close to far
-    grid_refs = doticu_references.Sort_Distance(grid_refs, none, "<")
+    grid_refs = doticu_references.Sort_Distance(grid_refs, player, "<")
 ```
 
 ### Notes:
