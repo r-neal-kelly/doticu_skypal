@@ -2,40 +2,85 @@
 
 Scriptname doticu_references hidden
 
-; needs an All_References and Grid_References func
+;/
+    Getters:
+        You can use these to start your filters.
+/;
 
-; all of these functions filter out "none" references.
+; Gets all available refs in the game.
+ObjectReference[] function All() native global
 
-; You can filter for however many types you want. Checks the reference and the base.
-; If you have '0' anywhere in the array, you will get all available references, making all other elements in the array irrelevant.
-ObjectReference[] function Filter(int[] form_types) native global
+; Gets all refs currently in the cell grid around the player. (Dynamically checks uGridsToLoad.)
+; This is your go-to method to start your filter, as it's more performant to work with less refs.
+ObjectReference[] function Grid() native global
 
-; You can restrict your filter to the currently loaded cell grid around the player. (This dynamically checks uGridsToLoad.)
-ObjectReference[] function Filter_Grid(int[] form_types) native global
 
-; mode options: "AND", "OR", or "XOR". It's case insensitive. If nothing matches, defaults to "OR".
-; if (mode == "AND"): will pass references that match all elements in the array.
-; if (mode == "OR"): will pass references that match any of the elements in the array.
-; if (mode == "XOR"): will pass references that match only one of the elements in the array, not 0 or more than 1.
-; if (do_negate == true): "AND" == "NAND", "OR" == "NOR", and "XOR" == "XNOR". Essentially, you get the opposite for each of the above.
-ObjectReference[] function Filter_Keywords(ObjectReference[] references, Keyword[] keywords, string mode = "OR", bool do_negate = false) native global
 
-; if (distance < 0.0), it defaults to 0.0
-; if (from == none), it defaults to the Player
-; mode options: "<", or ">". If nothing matches, defaults to "<". (More may be added in the future.)
-; if (mode == "<"), it passes only references that are less than the distance.
-; if (mode == ">"), it passes only references that are greater than the distance.
-ObjectReference[] function Filter_Distance(ObjectReference[] references, float distance, ObjectReference from = none, string mode = "<") native global
+;/
+    Filters:
+        Each filter has its modes listed above its signature.
+        if (refs == none): Passes an empty array.
+        if (mode == invalid): Passes the default mode listed in each signature.
+/;
 
-; It may actually be faster to let C++ iterate and invoke your callback per reference. Return true to keep iterating or false to stop.
-; Callback should look like: "bool function My_Global_Callback(ObjectReference reference, int index, int end) global"
-function Global_For_Each(ObjectReference[] references, string script_name, string global_name) native global
+; if (form_types == none): Uses an empty array.
+; if (mode == ""): Passes all refs that have a base type in the list.
+; if (mode == "!"): Passes all refs that do not have a base type in the list.
+ObjectReference[] function Filter_Base_Form_Types(ObjectReference[] refs, int[] form_types, string mode = "") native global
 
-; Callback should look like: "bool function My_Form_Method_Callback(ObjectReference reference, int index, int end)"
-function Form_For_Each(ObjectReference[] references, string script_name, string method_name, Form on_this) native global
+; if (bases == none, invalid): Uses an empty form list.
+; if (mode == ""): Passes all refs that have a base in the list.
+; if (mode == "!"): Passes all refs that do not have a base in the list.
+ObjectReference[] function Filter_Bases_Form_List(ObjectReference[] refs, FormList bases, string mode = "") native global
 
-; Callback should look like: "bool function My_Alias_Method_Callback(ObjectReference reference, int index, int end)"
-function Alias_For_Each(ObjectReference[] references, string script_name, string method_name, Alias on_this) native global
+; if (distance < 0.0): Uses 0.0.
+; if (from == none): Uses the player reference.
+; if (mode == "<"): Passes refs that are inside the distance.
+; if (mode == ">"): Passes refs that are outside the distance.
+ObjectReference[] function Filter_Distance(ObjectReference[] refs, float distance, ObjectReference from = none, string mode = "<") native global
 
-; Callback should look like: "bool function My_Active_Magic_EffectMethod_Callback(ObjectReference reference, int index, int end)"
-function Active_Magic_Effect_For_Each(ObjectReference[] references, string script_name, string method_name, ActiveMagicEffect on_this) native global
+; if (form_types == none): Uses an empty array.
+; if (mode == ""): Passes all refs that have a type in the list.
+; if (mode == "!"): Passes all refs that do not have a type in the list.
+ObjectReference[] function Filter_Form_Types(ObjectReference[] refs, int[] form_types, string mode = "") native global
+
+; if (keywords == none): Passes an empty array.
+; if (mode == "|"): Passes refs that match any keyword. (OR Gate)
+; if (mode == "&"): Passes refs that match all keywords. (AND Gate)
+; if (mode == "^"): Passes refs that match exactly one keyword. (XOR Gate)
+; if (mode == "!|"): Passes refs that match no keywords. (NOR Gate)
+; if (mode == "!&"): Passes refs that do not match all of the keywords. (NAND Gate)
+; if (mode == "!^"): Passes refs that match 0 or more than 1 keyword. (XNOR Gate)
+ObjectReference[] function Filter_Keywords(ObjectReference[] refs, Keyword[] keywords, string mode = "|") native global
+
+
+
+;/
+    Sorters:
+        Each sorter has its modes listed above its signature.
+        if (refs == none): Passes an empty array.
+/;
+
+; if (from == none): Uses the player reference.
+; if (mode == "<"): Sorts from closer to farther distance.
+; if (mode == ">"): Sorts from farther to closer distance.
+ObjectReference[] function Sort_Distance(ObjectReference[] refs, ObjectReference from = none, string mode = "<") native global
+
+
+
+;/
+    Iterators:
+        It may actually be faster to let C++ iterate for you. Return true to keep iterating or false to stop.
+/;
+
+; callback: bool function My_Global_Callback(ObjectReference reference, int index, int end) global
+function Global_For_Each(ObjectReference[] refs, string script_name, string global_name) native global
+
+; callback: bool function My_Form_Method_Callback(ObjectReference reference, int index, int end)
+function Form_For_Each(Form this, ObjectReference[] refs, string script_name, string method_name) native global
+
+; callback: bool function My_Alias_Method_Callback(ObjectReference reference, int index, int end)
+function Alias_For_Each(Alias this, ObjectReference[] refs, string script_name, string method_name) native global
+
+; callback: bool function My_Active_Magic_EffectMethod_Callback(ObjectReference reference, int index, int end)
+function Active_Magic_Effect_For_Each(ActiveMagicEffect this, ObjectReference[] refs, string script_name, string method_name) native global

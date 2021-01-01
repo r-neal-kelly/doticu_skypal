@@ -4,10 +4,13 @@
 
 #include <ShlObj.h>
 
+#include <algorithm>
+
 #include "skse64_common/skse_version.h"
 
 #include "doticu_skylib/interface.h"
 
+#include "doticu_skylib/enum_logic_gate.h"
 #include "doticu_skylib/enum_operator.h"
 
 #include "doticu_skylib/component_keywords.h"
@@ -21,8 +24,11 @@
 
 #include "doticu_skylib/virtual_macros.h"
 
+#include "doticu_skylib/filter_base_form_types.h"
+#include "doticu_skylib/filter_bases.h"
 #include "doticu_skylib/filter_distances.h"
-#include "doticu_skylib/filter_keyword.h"
+#include "doticu_skylib/filter_form_types.h"
+#include "doticu_skylib/filter_keywords.h"
 
 #include "doticu_references/intrinsic.h"
 #include "doticu_references/main.h"
@@ -76,7 +82,7 @@ namespace doticu_references {
         #define REGISTER(TYPE_)                         \
         SKYLIB_M                                        \
             TYPE_::Register_Me(machine);                \
-            SKYLIB_LOG("Added " #TYPE_ " functions.");    \
+            SKYLIB_LOG("Added " #TYPE_ " functions.");  \
         SKYLIB_W
 
         REGISTER(Main_t);
@@ -99,21 +105,26 @@ namespace doticu_references {
 
         #define STATIC(STATIC_NAME_, ARG_COUNT_, RETURN_TYPE_, STATIC_, ...)    \
         SKYLIB_M                                                                \
-            BIND_STATIC(machine, class_name,                                  \
+            BIND_STATIC(machine, class_name,                                    \
                         STATIC_NAME_, ARG_COUNT_,                               \
                         RETURN_TYPE_, STATIC_, __VA_ARGS__);                    \
         SKYLIB_W
 
-        STATIC("Filter",        1,  Vector_t<Reference_t*>,     Filter,             Vector_t<Form_Type_e>);
-        STATIC("Filter_Grid",   1,  Vector_t<Reference_t*>,     Filter_Grid,        Vector_t<Form_Type_e>);
+        STATIC("All", 0, Vector_t<Reference_t*>, All);
+        STATIC("Grid", 0, Vector_t<Reference_t*>, Grid);
 
-        STATIC("Filter_Keywords", 4, Vector_t<Reference_t*>, Filter_Keywords, Vector_t<Reference_t*>, Vector_t<Keyword_t*>, String_t, Bool_t);
+        STATIC("Filter_Base_Form_Types", 3, Vector_t<Reference_t*>, Filter_Base_Form_Types, Vector_t<Reference_t*>, Vector_t<Form_Type_e>, String_t);
+        STATIC("Filter_Bases_Form_List", 3, Vector_t<Reference_t*>, Filter_Bases_Form_List, Vector_t<Reference_t*>, Form_List_t*, String_t);
         STATIC("Filter_Distance", 4, Vector_t<Reference_t*>, Filter_Distance, Vector_t<Reference_t*>, Float_t, Reference_t*, String_t);
+        STATIC("Filter_Form_Types", 3, Vector_t<Reference_t*>, Filter_Form_Types, Vector_t<Reference_t*>, Vector_t<Form_Type_e>, String_t);
+        STATIC("Filter_Keywords", 3, Vector_t<Reference_t*>, Filter_Keywords, Vector_t<Reference_t*>, Vector_t<Keyword_t*>, String_t);
 
-        STATIC("Global_For_Each",               3,  void,   Global_For_Each,                Vector_t<Reference_t*>, String_t, String_t);
-        STATIC("Form_For_Each",                 4,  void,   Form_For_Each,                  Vector_t<Reference_t*>, String_t, String_t, Form_t*);
-        STATIC("Alias_For_Each",                4,  void,   Alias_For_Each,                 Vector_t<Reference_t*>, String_t, String_t, Alias_Base_t*);
-        STATIC("Active_Magic_Effect_For_Each",  4,  void,   Active_Magic_Effect_For_Each,   Vector_t<Reference_t*>, String_t, String_t, Active_Magic_Effect_t*);
+        STATIC("Sort_Distance", 3, Vector_t<Reference_t*>, Sort_Distance, Vector_t<Reference_t*>, Reference_t*, String_t);
+
+        STATIC("Global_For_Each", 3, void, Global_For_Each, Vector_t<Reference_t*>, String_t, String_t);
+        STATIC("Form_For_Each", 4, void, Form_For_Each, Form_t*, Vector_t<Reference_t*>, String_t, String_t);
+        STATIC("Alias_For_Each", 4, void, Alias_For_Each, Alias_Base_t*, Vector_t<Reference_t*>, String_t, String_t);
+        STATIC("Active_Magic_Effect_For_Each", 4, void, Active_Magic_Effect_For_Each, Active_Magic_Effect_t*, Vector_t<Reference_t*>, String_t, String_t);
     }
 
     template <typename Formable_t, std::enable_if_t<std::is_convertible<Formable_t, Form_t>::value, Bool_t> = true>
@@ -130,123 +141,197 @@ namespace doticu_references {
                 idx -= 1;
             }
         }
-
         return reinterpret_cast<Vector_t<some<Formable_t*>>&>(formables);
     }
 
-    static Logic_Gate_e To_Logic_Gate(String_t mode)
+    static inline Vector_t<some<Form_Type_e>>& Validate_Form_Types(Vector_t<Form_Type_e>& form_types)
     {
-        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode.data);
-        if (logic_gate != Logic_Gate_e::OR && logic_gate != Logic_Gate_e::AND && logic_gate != Logic_Gate_e::XOR) {
-            return Logic_Gate_e::OR;
-        } else {
-            return logic_gate;
-        }
-    }
-
-    static Operator_e To_Operator(String_t operator_str)
-    {
-        Operator_e operator_e = Operator_e::From_String(operator_str.data);
-        if (operator_e != Operator_e::LESS_THAN && operator_e != Operator_e::GREATER_THAN) {
-            return Operator_e::LESS_THAN;
-        } else {
-            return operator_e;
-        }
-    }
-
-    class Loaded_References_Filter_t : public Filter_i<some<Reference_t*>>
-    {
-    public:
-        Vector_t<Form_Type_e>   form_types;
-        Bool_t                  allow_all = false;
-
-        Loaded_References_Filter_t(const Vector_t<Form_Type_e>& uform_types)
-        {
-            size_t uform_type_count = uform_types.size();
-            this->form_types.reserve(uform_type_count);
-            for (Index_t idx = 0, end = uform_type_count; idx < end; idx += 1) {
-                Form_Type_e uform_type = uform_types[idx];
-                if (uform_type == Form_Type_e::FORM) {
-                    allow_all = true;
-                    return;
-                } else if (uform_type < Form_Type_e::_END_) {
-                    this->form_types.push_back(uform_type);
+        for (size_t idx = 0, end = form_types.size(); idx < end; idx += 1) {
+            Form_Type_e form_type = form_types[idx];
+            if (form_type == none<Form_Type_e>()) {
+                end -= 1;
+                if (idx < end) {
+                    form_types[idx] = form_types[end];
                 }
+                form_types.erase(form_types.begin() + end);
+                idx -= 1;
             }
         }
-
-        Bool_t operator()(some<Reference_t*> reference) override
-        {
-            if (allow_all || form_types.Has(reference->form_type)) {
-                return true;
-            } else {
-                Form_t* base_form = reference->base_form;
-                return base_form && base_form->Is_Valid() && form_types.Has(base_form->form_type);
-            }
-        }
-    };
-
-    Vector_t<Reference_t*> Main_t::Filter(Vector_t<Form_Type_e> form_types)
-    {
-        Loaded_References_Filter_t filter(form_types);
-        return *reinterpret_cast<Vector_t<Reference_t*>*>(&Reference_t::Loaded_References(&filter));
+        return reinterpret_cast<Vector_t<some<Form_Type_e>>&>(form_types);
     }
 
-    Vector_t<Reference_t*> Main_t::Filter_Grid(Vector_t<Form_Type_e> form_types)
+    Vector_t<Reference_t*> Main_t::All()
     {
-        Loaded_References_Filter_t filter(form_types);
-        return *reinterpret_cast<Vector_t<Reference_t*>*>(&Reference_t::Loaded_References_In_Grid(&filter));
+        return *reinterpret_cast<Vector_t<Reference_t*>*>(&Reference_t::Loaded_References());
     }
 
-    Vector_t<Reference_t*> Main_t::Filter_Keywords(Vector_t<Reference_t*> references,
-                                                   Vector_t<Keyword_t*> keywords,
-                                                   String_t mode,
-                                                   Bool_t do_negate)
+    Vector_t<Reference_t*> Main_t::Grid()
     {
-        Vector_t<Reference_t*>& read = references;
+        return *reinterpret_cast<Vector_t<Reference_t*>*>(&Reference_t::Loaded_Grid_References());
+    }
+
+    Vector_t<Reference_t*> Main_t::Filter_Base_Form_Types(Vector_t<Reference_t*> refs,
+                                                          Vector_t<Form_Type_e> form_types,
+                                                          String_t mode)
+    {
+        Vector_t<Reference_t*>& read = refs;
         Vector_t<Reference_t*> write;
         write.reserve(read.size() / 2);
 
-        F::State_c<Reference_t*> state(&read, &write);
+        Filter::State_c<Reference_t*> state(&read, &write);
 
-        Logic_Gate_e logic_gate = To_Logic_Gate(mode);
-        if (logic_gate == Logic_Gate_e::OR) {
-            F::Keywords_t<Reference_t*>(state).Filter<Logic_Gate_e::OR>(Validate_Formables(keywords), do_negate);
-        } else if (logic_gate == Logic_Gate_e::AND) {
-            F::Keywords_t<Reference_t*>(state).Filter<Logic_Gate_e::AND>(Validate_Formables(keywords), do_negate);
-        } else if (logic_gate == Logic_Gate_e::XOR) {
-            F::Keywords_t<Reference_t*>(state).Filter<Logic_Gate_e::XOR>(Validate_Formables(keywords), do_negate);
+        Vector_t<some<Form_Type_e>>& some_form_types = Validate_Form_Types(form_types);
+
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode.data);
+        if (logic_gate == Logic_Gate_e::NOT) {
+            Filter::Base_Form_Types_t<Reference_t*>(state).NOR<Vector_t<some<Form_Type_e>>&>(some_form_types);
+        } else {
+            Filter::Base_Form_Types_t<Reference_t*>(state).OR<Vector_t<some<Form_Type_e>>&>(some_form_types);
         }
 
         return *state.Results();
     }
 
-    Vector_t<Reference_t*> Main_t::Filter_Distance(Vector_t<Reference_t*> references,
+    Vector_t<Reference_t*> Main_t::Filter_Bases_Form_List(Vector_t<Reference_t*> refs,
+                                                          Form_List_t* bases,
+                                                          String_t mode)
+    {
+        Vector_t<Reference_t*>& read = refs;
+        Vector_t<Reference_t*> write;
+        write.reserve(read.size() / 2);
+
+        Filter::State_c<Reference_t*> state(&read, &write);
+
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode.data);
+        if (logic_gate == Logic_Gate_e::NOT) {
+            Filter::Bases_t<Reference_t*>(state).OR(bases, true);
+        } else {
+            Filter::Bases_t<Reference_t*>(state).OR(bases, false);
+        }
+
+        return *state.Results();
+    }
+
+    Vector_t<Reference_t*> Main_t::Filter_Distance(Vector_t<Reference_t*> refs,
                                                    Float_t distance,
                                                    Reference_t* from,
                                                    String_t mode)
     {
-        Vector_t<Reference_t*>& read = references;
+        Vector_t<Reference_t*>& read = refs;
         Vector_t<Reference_t*> write;
         write.reserve(read.size() / 2);
 
-        F::State_c<Reference_t*> state(&read, &write);
+        Filter::State_c<Reference_t*> state(&read, &write);
 
-        if (distance < 0.0f) {
-            distance = 0.0f;
+        Operator_e operator_e = Operator_e::From_String(mode.data);
+        if (operator_e == Operator_e::GREATER_THAN) {
+            Filter::Distances_t<Reference_t*>(state).GREATER_THAN(distance, from, false);
+        } else {
+            Filter::Distances_t<Reference_t*>(state).LESS_THAN(distance, from, false);
         }
+
+        return *state.Results();
+    }
+
+    Vector_t<Reference_t*> Main_t::Filter_Form_Types(Vector_t<Reference_t*> refs,
+                                                     Vector_t<Form_Type_e> form_types,
+                                                     String_t mode)
+    {
+        Vector_t<Reference_t*>& read = refs;
+        Vector_t<Reference_t*> write;
+        write.reserve(read.size() / 2);
+
+        Filter::State_c<Reference_t*> state(&read, &write);
+
+        Vector_t<some<Form_Type_e>>& some_form_types = Validate_Form_Types(form_types);
+
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode.data);
+        if (logic_gate == Logic_Gate_e::NOT) {
+            Filter::Form_Types_t<Reference_t*>(state).NOR<Vector_t<some<Form_Type_e>>&>(some_form_types);
+        } else {
+            Filter::Form_Types_t<Reference_t*>(state).OR<Vector_t<some<Form_Type_e>>&>(some_form_types);
+        }
+
+        return *state.Results();
+    }
+
+    Vector_t<Reference_t*> Main_t::Filter_Keywords(Vector_t<Reference_t*> refs,
+                                                   Vector_t<Keyword_t*> keywords,
+                                                   String_t mode)
+    {
+        Vector_t<Reference_t*>& read = refs;
+        Vector_t<Reference_t*> write;
+        write.reserve(read.size() / 2);
+
+        Filter::State_c<Reference_t*> state(&read, &write);
+
+        Vector_t<some<Keyword_t*>>& some_keywords = Validate_Formables(keywords);
+
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode.data);
+        if (logic_gate == Logic_Gate_e::OR) {
+            Filter::Keywords_t<Reference_t*>(state).OR<Vector_t<some<Keyword_t*>>&>(some_keywords);
+        } else if (logic_gate == Logic_Gate_e::AND) {
+            Filter::Keywords_t<Reference_t*>(state).AND<Vector_t<some<Keyword_t*>>&>(some_keywords);
+        } else if (logic_gate == Logic_Gate_e::XOR) {
+            Filter::Keywords_t<Reference_t*>(state).XOR<Vector_t<some<Keyword_t*>>&>(some_keywords);
+        } else if (logic_gate == Logic_Gate_e::NOR) {
+            Filter::Keywords_t<Reference_t*>(state).NOR<Vector_t<some<Keyword_t*>>&>(some_keywords);
+        } else if (logic_gate == Logic_Gate_e::NAND) {
+            Filter::Keywords_t<Reference_t*>(state).NAND<Vector_t<some<Keyword_t*>>&>(some_keywords);
+        } else if (logic_gate == Logic_Gate_e::XNOR) {
+            Filter::Keywords_t<Reference_t*>(state).XNOR<Vector_t<some<Keyword_t*>>&>(some_keywords);
+        } else {
+            Filter::Keywords_t<Reference_t*>(state).OR<Vector_t<some<Keyword_t*>>&>(some_keywords);
+        }
+
+        return *state.Results();
+    }
+
+    Vector_t<Reference_t*> Main_t::Sort_Distance(Vector_t<Reference_t*> refs,
+                                                 Reference_t* from,
+                                                 String_t mode)
+    {
+        Vector_t<some<Reference_t*>> some_refs = Validate_Formables(refs);
 
         some<Reference_t*> some_from = from && from->Is_Valid() ?
             from : static_cast<some<Reference_t*>>(Player_t::Self());
 
-        Operator_e operator_e = To_Operator(mode);
-        if (operator_e == Operator_e::LESS_THAN) {
-            F::Distances_t<Reference_t*>(state).Filter<Operator_e::LESS_THAN>(distance, some_from, false);
-        } else if (operator_e == Operator_e::GREATER_THAN) {
-            F::Distances_t<Reference_t*>(state).Filter<Operator_e::GREATER_THAN>(distance, some_from, false);
+        Operator_e operator_e = Operator_e::From_String(mode.data);
+        if (operator_e == Operator_e::GREATER_THAN) {
+            class Distance_Comparator_t
+            {
+            public:
+                some<Reference_t*> some_from;
+                Distance_Comparator_t(some<Reference_t*> some_from) :
+                    some_from(some_from)
+                {
+                }
+
+                Bool_t operator ()(some<Reference_t*> a, some<Reference_t*> b)
+                {
+                    return a->Distance_Between(some_from) > b->Distance_Between(some_from);
+                }
+            };
+            std::sort(some_refs.begin(), some_refs.end(), Distance_Comparator_t(some_from));
+        } else {
+            class Distance_Comparator_t
+            {
+            public:
+                some<Reference_t*> some_from;
+                Distance_Comparator_t(some<Reference_t*> some_from) :
+                    some_from(some_from)
+                {
+                }
+
+                Bool_t operator ()(some<Reference_t*> a, some<Reference_t*> b)
+                {
+                    return a->Distance_Between(some_from) < b->Distance_Between(some_from);
+                }
+            };
+            std::sort(some_refs.begin(), some_refs.end(), Distance_Comparator_t(some_from));
         }
 
-        return *state.Results();
+        return *reinterpret_cast<Vector_t<Reference_t*>*>(&some_refs);
     }
 
     class For_Each_Arguments_t : public V::Arguments_t
@@ -335,10 +420,10 @@ namespace doticu_references {
     }
 
     template <typename Scriptable_t>
-    static void Method_For_Each(Vector_t<Reference_t*>&& ureferences,
+    static void Method_For_Each(Scriptable_t scriptable,
+                                Vector_t<Reference_t*>&& ureferences,
                                 String_t script_name,
-                                String_t method_name,
-                                Scriptable_t scriptable)
+                                String_t method_name)
     {
         class Callback_t : public V::Callback_t
         {
@@ -384,7 +469,7 @@ namespace doticu_references {
             }
         };
 
-        if (script_name && method_name && scriptable) {
+        if (scriptable && script_name && method_name) {
             const Vector_t<some<Reference_t*>> references = Validate_Formables(ureferences);
             const Int_t index = 0;
             const size_t reference_count = references.size();
@@ -407,28 +492,28 @@ namespace doticu_references {
         }
     }
 
-    void Main_t::Form_For_Each(Vector_t<Reference_t*> ureferences,
+    void Main_t::Form_For_Each(Form_t* self,
+                               Vector_t<Reference_t*> references,
                                String_t script_name,
-                               String_t method_name,
-                               Form_t* on_this)
+                               String_t method_name)
     {
-        Method_For_Each(std::move(ureferences), script_name, method_name, on_this);
+        Method_For_Each(self, std::move(references), script_name, method_name);
     }
 
-    void Main_t::Alias_For_Each(Vector_t<Reference_t*> ureferences,
+    void Main_t::Alias_For_Each(Alias_Base_t* self,
+                                Vector_t<Reference_t*> references,
                                 String_t script_name,
-                                String_t method_name,
-                                Alias_Base_t* on_this)
+                                String_t method_name)
     {
-        Method_For_Each(std::move(ureferences), script_name, method_name, on_this);
+        Method_For_Each(self, std::move(references), script_name, method_name);
     }
 
-    void Main_t::Active_Magic_Effect_For_Each(Vector_t<Reference_t*> ureferences,
+    void Main_t::Active_Magic_Effect_For_Each(Active_Magic_Effect_t* self,
+                                              Vector_t<Reference_t*> references,
                                               String_t script_name,
-                                              String_t method_name,
-                                              Active_Magic_Effect_t* on_this)
+                                              String_t method_name)
     {
-        Method_For_Each(std::move(ureferences), script_name, method_name, on_this);
+        Method_For_Each(self, std::move(references), script_name, method_name);
     }
 
 }
