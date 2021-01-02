@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "doticu_skypap/intrinsic.h"
+#include "doticu_skypal/intrinsic.h"
 
-namespace doticu_skypap {
+namespace doticu_skypal {
 
     class Consts_t
     {

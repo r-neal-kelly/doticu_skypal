@@ -6,9 +6,9 @@
 
 #include "skse64/PluginAPI.h"
 
-#include "doticu_skypap/intrinsic.h"
+#include "doticu_skypal/intrinsic.h"
 
-namespace doticu_skypap {
+namespace doticu_skypal {
 
     class Main_t
     {

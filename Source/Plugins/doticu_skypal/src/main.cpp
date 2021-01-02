@@ -6,11 +6,11 @@
 
 #include "doticu_skylib/virtual_macros.h"
 
-#include "doticu_skypap/consts.h"
-#include "doticu_skypap/main.h"
-#include "doticu_skypap/references.h"
+#include "doticu_skypal/consts.h"
+#include "doticu_skypal/main.h"
+#include "doticu_skypal/references.h"
 
-namespace doticu_skypap {
+namespace doticu_skypal {
 
     const SKSEInterface*        Main_t::SKSE                        = nullptr;
     const SKSEPapyrusInterface* Main_t::SKSE_PAPYRUS                = nullptr;
@@ -21,7 +21,7 @@ namespace doticu_skypap {
     {
         if (skse && info) {
             info->infoVersion = PluginInfo::kInfoVersion;
-            info->name = "doticu_skypap";
+            info->name = "doticu_skypal";
             info->version = 1;
 
             if (Version_t<u16>::From_MM_mm_ppp_b(skse->runtimeVersion) == Consts_t::Skyrim::Required_Version()) {
@@ -40,7 +40,7 @@ namespace doticu_skypap {
 
     Bool_t Main_t::SKSE_Load_Plugin(const SKSEInterface* skse)
     {
-        SKSE_LOG.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\Skyrim Special Edition\\SKSE\\doticu_skypap.log");
+        SKSE_LOG.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\Skyrim Special Edition\\SKSE\\doticu_skypal.log");
 
         if (skse) {
             SKSE = skse;
@@ -71,8 +71,8 @@ namespace doticu_skypap {
             SKYLIB_LOG("Added " #TYPE_ " functions.");  \
         SKYLIB_W
 
-        REGISTER(doticu_skypap::Main_t);
-        REGISTER(doticu_skypap::References_t);
+        REGISTER(doticu_skypal::Main_t);
+        REGISTER(doticu_skypal::References_t);
 
         #undef REGISTER
 
@@ -83,7 +83,7 @@ namespace doticu_skypap {
 
     String_t Main_t::Class_Name()
     {
-        DEFINE_CLASS_NAME("skypap");
+        DEFINE_CLASS_NAME("skypal");
     }
 
     void Main_t::Register_Me(V::Machine_t* machine)
@@ -116,12 +116,12 @@ extern "C" {
 
     skylib::Bool_t SKSEPlugin_Query(const SKSEInterface* skse, PluginInfo* info)
     {
-        return doticu_skypap::Main_t::SKSE_Query_Plugin(skse, info);
+        return doticu_skypal::Main_t::SKSE_Query_Plugin(skse, info);
     }
 
     skylib::Bool_t SKSEPlugin_Load(const SKSEInterface* skse)
     {
-        return doticu_skypap::Main_t::SKSE_Load_Plugin(skse);
+        return doticu_skypal::Main_t::SKSE_Load_Plugin(skse);
     }
 
 }

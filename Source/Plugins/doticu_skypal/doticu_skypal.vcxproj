@@ -10,9 +10,9 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{2c9e8ecf-0219-4ea9-b252-1ee6c20794cd}</ProjectGuid>
-    <RootNamespace>doticuskypap</RootNamespace>
+    <RootNamespace>doticuskypal</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
-    <ProjectName>doticu_skypap</ProjectName>
+    <ProjectName>doticu_skypal</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -29,7 +29,7 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="doticu_skypap.props" />
+    <Import Project="doticu_skypal.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -68,10 +68,10 @@
     <ClCompile Include="src\references.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\doticu_skypap\consts.h" />
-    <ClInclude Include="include\doticu_skypap\intrinsic.h" />
-    <ClInclude Include="include\doticu_skypap\main.h" />
-    <ClInclude Include="include\doticu_skypap\references.h" />
+    <ClInclude Include="include\doticu_skypal\consts.h" />
+    <ClInclude Include="include\doticu_skypal\intrinsic.h" />
+    <ClInclude Include="include\doticu_skypal\main.h" />
+    <ClInclude Include="include\doticu_skypal\references.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\doticu_skylib\Source\Plugins\doticu_skylib\doticu_skylib.vcxproj">

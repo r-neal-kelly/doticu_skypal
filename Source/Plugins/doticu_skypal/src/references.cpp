@@ -24,13 +24,13 @@
 #include "doticu_skylib/filter_form_types.h"
 #include "doticu_skylib/filter_keywords.h"
 
-#include "doticu_skypap/references.h"
+#include "doticu_skypal/references.h"
 
-namespace doticu_skypap {
+namespace doticu_skypal {
 
     String_t References_t::Class_Name()
     {
-        DEFINE_CLASS_NAME("skypap_references");
+        DEFINE_CLASS_NAME("skypal_references");
     }
 
     void References_t::Register_Me(V::Machine_t* machine)

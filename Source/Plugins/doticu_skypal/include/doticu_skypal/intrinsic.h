@@ -11,7 +11,7 @@
 namespace doticu_skylib {}
 namespace skylib = doticu_skylib;
 
-namespace doticu_skypap {
+namespace doticu_skypal {
 
     using u8                    = skylib::u8;
     using u16                   = skylib::u16;

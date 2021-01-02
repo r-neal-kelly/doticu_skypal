@@ -23,13 +23,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\doticu_skypap\consts.h">
+    <ClInclude Include="include\doticu_skypal\consts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\doticu_skypap\intrinsic.h">
+    <ClInclude Include="include\doticu_skypal\intrinsic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\doticu_skypap\main.h">
+    <ClInclude Include="include\doticu_skypal\main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

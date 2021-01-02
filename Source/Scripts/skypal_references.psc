@@ -1,6 +1,6 @@
 ; Copyright © 2020 r-neal-kelly, aka doticu
 
-Scriptname skypap_references hidden
+Scriptname skypal_references hidden
 
 ;/
     Getters:

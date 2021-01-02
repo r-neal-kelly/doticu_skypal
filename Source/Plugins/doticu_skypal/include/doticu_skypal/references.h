@@ -6,9 +6,9 @@
 
 #include "doticu_skylib/form_type.h"
 
-#include "doticu_skypap/intrinsic.h"
+#include "doticu_skypal/intrinsic.h"
 
-namespace doticu_skypap {
+namespace doticu_skypal {
 
     class References_t
     {
