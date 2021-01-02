@@ -10,8 +10,9 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{2c9e8ecf-0219-4ea9-b252-1ee6c20794cd}</ProjectGuid>
-    <RootNamespace>doticureferencelookup</RootNamespace>
+    <RootNamespace>doticuskypap</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>doticu_skypap</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -28,7 +29,7 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="doticu_references.props" />
+    <Import Project="doticu_skypap.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -62,16 +63,20 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\consts.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\references.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\doticu_skypap\consts.h" />
+    <ClInclude Include="include\doticu_skypap\intrinsic.h" />
+    <ClInclude Include="include\doticu_skypap\main.h" />
+    <ClInclude Include="include\doticu_skypap\references.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\..\..\doticu_skylib\Source\Plugins\doticu_skylib\doticu_skylib.vcxproj">
       <Project>{0791ab06-0e03-486a-9a24-2feefc26674b}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\doticu_references\intrinsic.h" />
-    <ClInclude Include="include\doticu_references\main.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -11,13 +11,17 @@
 namespace doticu_skylib {}
 namespace skylib = doticu_skylib;
 
-namespace doticu_references {
+namespace doticu_skypap {
+
+    using u8                    = skylib::u8;
+    using u16                   = skylib::u16;
 
     using Bool_t                = skylib::Bool_t;
     using Int_t                 = skylib::Int_t;
     using Float_t               = skylib::Float_t;
     using String_t              = skylib::String_t;
 
+    using Word_t                = skylib::Word_t;
     using Index_t               = skylib::Index_t;
 
     template <typename T>
@@ -35,6 +39,9 @@ namespace doticu_references {
     template <typename ...Ts>
     using Filter_i              = skylib::Filter_i<Ts...>;
 
+    template <typename T>
+    using Version_t             = skylib::Version_t<T>;
+
     using Form_Type_e           = skylib::Form_Type_e;
     using Logic_Gate_e          = skylib::Logic_Gate_e;
     using Operator_e            = skylib::Operator_e;
@@ -43,6 +50,7 @@ namespace doticu_references {
     using Alias_Base_t          = skylib::Alias_Base_t;
     using Form_t                = skylib::Form_t;
     using Form_List_t           = skylib::Form_List_t;
+    using Game_t                = skylib::Game_t;
     using Keyword_t             = skylib::Keyword_t;
     using Player_t              = skylib::Player_t;
     using Reference_t           = skylib::Reference_t;

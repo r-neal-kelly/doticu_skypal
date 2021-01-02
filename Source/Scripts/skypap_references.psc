@@ -1,6 +1,6 @@
 ; Copyright © 2020 r-neal-kelly, aka doticu
 
-Scriptname doticu_references hidden
+Scriptname skypap_references hidden
 
 ;/
     Getters:
@@ -71,6 +71,10 @@ ObjectReference[] function Sort_Distance(ObjectReference[] refs, ObjectReference
 ;/
     Iterators:
         It may actually be faster to let C++ iterate for you. Return true to keep iterating or false to stop.
+        If the script with the callback is extended from a Form (e.g. Quest) use Form_For_Each.
+        If the script with the callback is extended from an Alias, use Alias_For_Each.
+        If the script with the callback is extended from an ActiveMagicEffect, use Active_Magic_Effect_For_Each.
+        Global_For_Each can be used on any script, as long as the callabck has the global keyword on it.
 /;
 
 ; callback: bool function My_Global_Callback(ObjectReference reference, int index, int end) global

@@ -18,12 +18,18 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\consts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\doticu_references\intrinsic.h">
+    <ClInclude Include="include\doticu_skypap\consts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\doticu_references\main.h">
+    <ClInclude Include="include\doticu_skypap\intrinsic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\doticu_skypap\main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

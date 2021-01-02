@@ -2,13 +2,7 @@
     Copyright © 2020 r-neal-kelly, aka doticu
 */
 
-#include <ShlObj.h>
-
 #include <algorithm>
-
-#include "skse64_common/skse_version.h"
-
-#include "doticu_skylib/interface.h"
 
 #include "doticu_skylib/enum_logic_gate.h"
 #include "doticu_skylib/enum_operator.h"
@@ -30,76 +24,16 @@
 #include "doticu_skylib/filter_form_types.h"
 #include "doticu_skylib/filter_keywords.h"
 
-#include "doticu_references/intrinsic.h"
-#include "doticu_references/main.h"
+#include "doticu_skypap/references.h"
 
-namespace doticu_references {
+namespace doticu_skypap {
 
-    const   SKSEInterface*          Main_t::SKSE                = nullptr;
-    const   SKSEPapyrusInterface*   Main_t::SKSE_PAPYRUS        = nullptr;
-            PluginHandle            Main_t::SKSE_PLUGIN_HANDLE  = 0;
-            IDebugLog               Main_t::SKSE_LOG;
-
-    Bool_t Main_t::SKSE_Query_Plugin(const SKSEInterface* skse, PluginInfo* info)
+    String_t References_t::Class_Name()
     {
-        if (skse && info) {
-            info->infoVersion = PluginInfo::kInfoVersion;
-            info->name = "doticu_references";
-            info->version = 1;
-            return skse->skseVersion >= MAKE_EXE_VERSION(2, 0, 17);
-        } else {
-            return false;
-        }
+        DEFINE_CLASS_NAME("skypap_references");
     }
 
-    Bool_t Main_t::SKSE_Load_Plugin(const SKSEInterface* skse)
-    {
-        SKSE_LOG.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\Skyrim Special Edition\\SKSE\\doticu_references.log");
-
-        if (skse) {
-            SKSE = skse;
-            SKSE_PAPYRUS = static_cast<const SKSEPapyrusInterface*>(SKSE->QueryInterface(kInterface_Papyrus));
-            SKSE_PLUGIN_HANDLE = SKSE->GetPluginHandle();
-            if (SKSE_PAPYRUS) {
-                if (SKSE_PAPYRUS->Register(reinterpret_cast<SKSEPapyrusInterface::RegisterFunctions>(SKSE_Register_Functions))) {
-                    return true;
-                } else {
-                    _FATALERROR("Unable to register functions.");
-                    return false;
-                }
-            } else {
-                _FATALERROR("Unable to get papyrus and/or messaging interface.");
-                return false;
-            }
-        } else {
-            _FATALERROR("Unable to get skse interface.");
-            return false;
-        }
-    }
-
-    Bool_t Main_t::SKSE_Register_Functions(V::Machine_t* machine)
-    {
-        #define REGISTER(TYPE_)                         \
-        SKYLIB_M                                        \
-            TYPE_::Register_Me(machine);                \
-            SKYLIB_LOG("Added " #TYPE_ " functions.");  \
-        SKYLIB_W
-
-        REGISTER(Main_t);
-
-        #undef REGISTER
-
-        SKYLIB_LOG("Added all functions.\n");
-
-        return true;
-    }
-
-    String_t Main_t::Class_Name()
-    {
-        DEFINE_CLASS_NAME("doticu_references");
-    }
-
-    void Main_t::Register_Me(V::Machine_t* machine)
+    void References_t::Register_Me(V::Machine_t* machine)
     {
         String_t class_name = Class_Name();
 
@@ -125,6 +59,8 @@ namespace doticu_references {
         STATIC("Form_For_Each", 4, void, Form_For_Each, Form_t*, Vector_t<Reference_t*>, String_t, String_t);
         STATIC("Alias_For_Each", 4, void, Alias_For_Each, Alias_Base_t*, Vector_t<Reference_t*>, String_t, String_t);
         STATIC("Active_Magic_Effect_For_Each", 4, void, Active_Magic_Effect_For_Each, Active_Magic_Effect_t*, Vector_t<Reference_t*>, String_t, String_t);
+
+        #undef STATIC
     }
 
     template <typename Formable_t, std::enable_if_t<std::is_convertible<Formable_t, Form_t>::value, Bool_t> = true>
@@ -160,19 +96,19 @@ namespace doticu_references {
         return reinterpret_cast<Vector_t<some<Form_Type_e>>&>(form_types);
     }
 
-    Vector_t<Reference_t*> Main_t::All()
+    Vector_t<Reference_t*> References_t::All()
     {
         return *reinterpret_cast<Vector_t<Reference_t*>*>(&Reference_t::Loaded_References());
     }
 
-    Vector_t<Reference_t*> Main_t::Grid()
+    Vector_t<Reference_t*> References_t::Grid()
     {
         return *reinterpret_cast<Vector_t<Reference_t*>*>(&Reference_t::Loaded_Grid_References());
     }
 
-    Vector_t<Reference_t*> Main_t::Filter_Base_Form_Types(Vector_t<Reference_t*> refs,
-                                                          Vector_t<Form_Type_e> form_types,
-                                                          String_t mode)
+    Vector_t<Reference_t*> References_t::Filter_Base_Form_Types(Vector_t<Reference_t*> refs,
+                                                                Vector_t<Form_Type_e> form_types,
+                                                                String_t mode)
     {
         Vector_t<Reference_t*>& read = refs;
         Vector_t<Reference_t*> write;
@@ -192,9 +128,9 @@ namespace doticu_references {
         return *state.Results();
     }
 
-    Vector_t<Reference_t*> Main_t::Filter_Bases_Form_List(Vector_t<Reference_t*> refs,
-                                                          Form_List_t* bases,
-                                                          String_t mode)
+    Vector_t<Reference_t*> References_t::Filter_Bases_Form_List(Vector_t<Reference_t*> refs,
+                                                                Form_List_t* bases,
+                                                                String_t mode)
     {
         Vector_t<Reference_t*>& read = refs;
         Vector_t<Reference_t*> write;
@@ -212,10 +148,10 @@ namespace doticu_references {
         return *state.Results();
     }
 
-    Vector_t<Reference_t*> Main_t::Filter_Distance(Vector_t<Reference_t*> refs,
-                                                   Float_t distance,
-                                                   Reference_t* from,
-                                                   String_t mode)
+    Vector_t<Reference_t*> References_t::Filter_Distance(Vector_t<Reference_t*> refs,
+                                                         Float_t distance,
+                                                         Reference_t* from,
+                                                         String_t mode)
     {
         Vector_t<Reference_t*>& read = refs;
         Vector_t<Reference_t*> write;
@@ -233,9 +169,9 @@ namespace doticu_references {
         return *state.Results();
     }
 
-    Vector_t<Reference_t*> Main_t::Filter_Form_Types(Vector_t<Reference_t*> refs,
-                                                     Vector_t<Form_Type_e> form_types,
-                                                     String_t mode)
+    Vector_t<Reference_t*> References_t::Filter_Form_Types(Vector_t<Reference_t*> refs,
+                                                           Vector_t<Form_Type_e> form_types,
+                                                           String_t mode)
     {
         Vector_t<Reference_t*>& read = refs;
         Vector_t<Reference_t*> write;
@@ -255,9 +191,9 @@ namespace doticu_references {
         return *state.Results();
     }
 
-    Vector_t<Reference_t*> Main_t::Filter_Keywords(Vector_t<Reference_t*> refs,
-                                                   Vector_t<Keyword_t*> keywords,
-                                                   String_t mode)
+    Vector_t<Reference_t*> References_t::Filter_Keywords(Vector_t<Reference_t*> refs,
+                                                         Vector_t<Keyword_t*> keywords,
+                                                         String_t mode)
     {
         Vector_t<Reference_t*>& read = refs;
         Vector_t<Reference_t*> write;
@@ -287,9 +223,9 @@ namespace doticu_references {
         return *state.Results();
     }
 
-    Vector_t<Reference_t*> Main_t::Sort_Distance(Vector_t<Reference_t*> refs,
-                                                 Reference_t* from,
-                                                 String_t mode)
+    Vector_t<Reference_t*> References_t::Sort_Distance(Vector_t<Reference_t*> refs,
+                                                       Reference_t* from,
+                                                       String_t mode)
     {
         Vector_t<some<Reference_t*>> some_refs = Validate_Formables(refs);
 
@@ -358,7 +294,7 @@ namespace doticu_references {
         }
     };
 
-    void Main_t::Global_For_Each(Vector_t<Reference_t*> ureferences, String_t script_name, String_t global_name)
+    void References_t::Global_For_Each(Vector_t<Reference_t*> ureferences, String_t script_name, String_t global_name)
     {
         class Callback_t : public V::Callback_t
         {
@@ -492,45 +428,28 @@ namespace doticu_references {
         }
     }
 
-    void Main_t::Form_For_Each(Form_t* self,
-                               Vector_t<Reference_t*> references,
-                               String_t script_name,
-                               String_t method_name)
+    void References_t::Form_For_Each(Form_t* self,
+                                     Vector_t<Reference_t*> references,
+                                     String_t script_name,
+                                     String_t method_name)
     {
         Method_For_Each(self, std::move(references), script_name, method_name);
     }
 
-    void Main_t::Alias_For_Each(Alias_Base_t* self,
-                                Vector_t<Reference_t*> references,
-                                String_t script_name,
-                                String_t method_name)
+    void References_t::Alias_For_Each(Alias_Base_t* self,
+                                      Vector_t<Reference_t*> references,
+                                      String_t script_name,
+                                      String_t method_name)
     {
         Method_For_Each(self, std::move(references), script_name, method_name);
     }
 
-    void Main_t::Active_Magic_Effect_For_Each(Active_Magic_Effect_t* self,
-                                              Vector_t<Reference_t*> references,
-                                              String_t script_name,
-                                              String_t method_name)
+    void References_t::Active_Magic_Effect_For_Each(Active_Magic_Effect_t* self,
+                                                    Vector_t<Reference_t*> references,
+                                                    String_t script_name,
+                                                    String_t method_name)
     {
         Method_For_Each(self, std::move(references), script_name, method_name);
-    }
-
-}
-
-extern "C" {
-
-    _declspec(dllexport) skylib::Bool_t SKSEPlugin_Query(const SKSEInterface*, PluginInfo*);
-    _declspec(dllexport) skylib::Bool_t SKSEPlugin_Load(const SKSEInterface*);
-
-    skylib::Bool_t SKSEPlugin_Query(const SKSEInterface* skse, PluginInfo* info)
-    {
-        return doticu_references::Main_t::SKSE_Query_Plugin(skse, info);
-    }
-
-    skylib::Bool_t SKSEPlugin_Load(const SKSEInterface* skse)
-    {
-        return doticu_references::Main_t::SKSE_Load_Plugin(skse);
     }
 
 }
