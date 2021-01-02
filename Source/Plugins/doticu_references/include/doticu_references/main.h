@@ -23,11 +23,11 @@ namespace doticu_references {
     public:
         static Bool_t SKSE_Query_Plugin(const SKSEInterface* skse, PluginInfo* info);
         static Bool_t SKSE_Load_Plugin(const SKSEInterface* skse);
-        static Bool_t SKSE_Register_Functions(skylib::Virtual::Machine_t* machine);
+        static Bool_t SKSE_Register_Functions(V::Machine_t* machine);
 
     public:
         static String_t Class_Name();
-        static void     Register_Me(skylib::Virtual::Machine_t* machine);
+        static void     Register_Me(V::Machine_t* machine);
 
     public:
         static Vector_t<Reference_t*>   All();

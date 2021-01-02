@@ -4,15 +4,17 @@ Scriptname doticu_references_test extends Quest
 
 FormList property form_list_SoulGemsAll auto
 Keyword property keyword_JobMerchant auto
+Keyword property keyword_unique_dragonborn auto
+Keyword property keyword_unique_player auto
 Keyword property keyword_WeapTypeSword auto
 
 ; Runs only once.
 event OnInit()
-    RegisterForSingleUpdate(2)
+    ;RegisterForSingleUpdate(2)
 
     ;Test_Sort_Distance()
     ;Test_Filter_Bases_Form_List()
-    ;Test_Filter_Keywords()
+    Test_Filter_Keywords()
     ;Test_Filter_Distance()
     ;Test_Filter()
     ;Test_Filter_Grid()
@@ -101,6 +103,7 @@ function Test_Filter_Keywords()
     Debug.Trace("")
 
     ObjectReference[] all_refs = doticu_references.All()
+    ObjectReference[] grid_refs = doticu_references.Grid()
     Keyword[] keywords = new Keyword[2]
 
     keywords[0] = keyword_WeapTypeSword
@@ -109,6 +112,23 @@ function Test_Filter_Keywords()
     Debug.Trace("")
     Debug.Trace("    (all_refs, WeapTypeSword, !|)")
     Trace_References(doticu_references.Filter_Keywords(all_refs, keywords, "!|"), 15)
+    Debug.Trace("")
+
+    keywords[0] = keyword_unique_player
+    Debug.Trace("    (grid_refs, keyword_unique_player, |)")
+    Trace_References(doticu_references.Filter_Keywords(grid_refs, keywords, "|"), 15)
+    Debug.Trace("")
+    Debug.Trace("    (grid_refs, keyword_unique_player, !|)")
+    Trace_References(doticu_references.Filter_Keywords(grid_refs, keywords, "!|"), 15)
+    Debug.Trace("")
+
+    keywords[0] = keyword_unique_player
+    keywords[1] = keyword_unique_dragonborn
+    Debug.Trace("    (grid_refs, keyword_unique_player + keyword_unique_dragonborn, |)")
+    Trace_References(doticu_references.Filter_Keywords(grid_refs, keywords, "|"), 15)
+    Debug.Trace("")
+    Debug.Trace("    (grid_refs, keyword_unique_player + keyword_unique_dragonborn, !|)")
+    Trace_References(doticu_references.Filter_Keywords(grid_refs, keywords, "!|"), 15)
     Debug.Trace("")
 
     keywords[0] = keyword_JobMerchant
