@@ -29,9 +29,9 @@
         skypal_references.Form_For_Each(self, grid_refs, "MyQuest", "MyCallback")
     endFunction
 
-    ; return true to continue looping, or false to break
+    
     bool function MyCallback(ObjectReference ref, int idx, int end)
         ; handle each ref here
-        return true
+        return true; to continue looping. else false to break
     endFunction
 ```
