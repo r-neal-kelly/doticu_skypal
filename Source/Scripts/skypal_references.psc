@@ -86,5 +86,5 @@ function Form_For_Each(Form this, ObjectReference[] refs, string script_name, st
 ; callback: bool function My_Alias_Method_Callback(ObjectReference reference, int index, int end)
 function Alias_For_Each(Alias this, ObjectReference[] refs, string script_name, string method_name) native global
 
-; callback: bool function My_Active_Magic_EffectMethod_Callback(ObjectReference reference, int index, int end)
+; callback: bool function My_Active_Magic_Effect_Method_Callback(ObjectReference reference, int index, int end)
 function Active_Magic_Effect_For_Each(ActiveMagicEffect this, ObjectReference[] refs, string script_name, string method_name) native global

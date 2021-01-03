@@ -1,5 +1,5 @@
 # doticu-skypal
-*A Papyrus library providing skylib functionality for The Elder Scrolls V: Skyrim Special Edition.*
+*A Papyrus library providing optimized functionality for The Elder Scrolls V: Skyrim Special Edition.*
 
 ### User and Developer Requirements:
 - [Skyrim SE 1.5.97](https://store.steampowered.com/app/489830/The_Elder_Scrolls_V_Skyrim_Special_Edition/)
@@ -10,14 +10,28 @@
 
 ### Examples:
 ```Papyrus
+    Scriptname MyQuest extends Quest
+
     ObjectReference property player auto
 
-    ; Gets all refs currently in the cell grid around the player
-    ObjectReference[] grid_refs = skypal_references.Grid()
+    function MyFunc()
+        ; Get all refs currently in the cell grid around the player
+        ObjectReference[] grid_refs = skypal_references.Grid()
 
-    ; Filter out any refs that are 5000.0 or more units away from the player.
-    grid_refs = skypal_references.Filter_Distance(grid_refs, 5000.0, player, "<")
+        ; Filter out any refs that are 5000.0 or more units away from the player
+        grid_refs = skypal_references.Filter_Distance(grid_refs, 5000.0, player, "<")
 
-    ; Sort them from close to far
-    grid_refs = skypal_references.Sort_Distance(grid_refs, player, "<")
+        ; Sort them from closest to farthest away from the player
+        grid_refs = skypal_references.Sort_Distance(grid_refs, player, "<")
+
+        ; skypal can iterate for you, which can help speed up loops
+        ; (We'll use the correct iterator for the "self" variable, which is a Form)
+        skypal_references.Form_For_Each(self, grid_refs, "MyQuest", "MyCallback")
+    endFunction
+
+    ; return true to continue looping, or false to break
+    bool function MyCallback(ObjectReference ref, int idx, int end)
+        ; handle each ref here
+        return true
+    endFunction
 ```
