@@ -4,10 +4,13 @@
 
 #include <ShlObj.h>
 
+#include "doticu_skylib/os.h"
+
 #include "doticu_skylib/virtual_macros.h"
 
 #include "doticu_skypal/consts.h"
 #include "doticu_skypal/main.h"
+#include "doticu_skypal/bases.h"
 #include "doticu_skypal/references.h"
 
 namespace doticu_skypal {
@@ -72,6 +75,7 @@ namespace doticu_skypal {
         SKYLIB_W
 
         REGISTER(doticu_skypal::Main_t);
+        REGISTER(doticu_skypal::Bases_t);
         REGISTER(doticu_skypal::References_t);
 
         #undef REGISTER
@@ -99,12 +103,65 @@ namespace doticu_skypal {
 
         STATIC("Has_DLL", 0, Bool_t, Has_DLL);
 
+        STATIC("Microseconds", 0, Float_t, Microseconds);
+        STATIC("Milliseconds", 0, Float_t, Milliseconds);
+        STATIC("Seconds", 0, Float_t, Seconds);
+
         #undef STATIC
+    }
+
+    Vector_t<some<Form_t*>>& Main_t::Validate_Forms(Vector_t<Form_t*>& forms)
+    {
+        for (size_t idx = 0, end = forms.size(); idx < end; idx += 1) {
+            Form_t* form = forms[idx];
+            if (!form) {
+                end -= 1;
+                if (idx < end) {
+                    forms[idx] = forms[end];
+                }
+                forms.erase(forms.begin() + end);
+                idx -= 1;
+            }
+        }
+
+        return reinterpret_cast<Vector_t<some<Form_t*>>&>(forms);
+    }
+
+    Vector_t<some<Form_Type_e>>& Main_t::Validate_Form_Types(Vector_t<Form_Type_e>& form_types)
+    {
+        for (size_t idx = 0, end = form_types.size(); idx < end; idx += 1) {
+            maybe<Form_Type_e> form_type = form_types[idx];
+            if (!form_type) {
+                end -= 1;
+                if (idx < end) {
+                    form_types[idx] = form_types[end];
+                }
+                form_types.erase(form_types.begin() + end);
+                idx -= 1;
+            }
+        }
+
+        return reinterpret_cast<Vector_t<some<Form_Type_e>>&>(form_types);
     }
 
     Bool_t Main_t::Has_DLL()
     {
         return true;
+    }
+
+    Float_t Main_t::Microseconds()
+    {
+        return static_cast<Float_t>(OS_t::Microseconds());
+    }
+
+    Float_t Main_t::Milliseconds()
+    {
+        return static_cast<Float_t>(OS_t::Milliseconds());
+    }
+
+    Float_t Main_t::Seconds()
+    {
+        return static_cast<Float_t>(OS_t::Seconds());
     }
 
 }

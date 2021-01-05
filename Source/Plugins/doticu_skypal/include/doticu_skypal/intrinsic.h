@@ -52,6 +52,7 @@ namespace doticu_skypal {
     using Form_List_t           = skylib::Form_List_t;
     using Game_t                = skylib::Game_t;
     using Keyword_t             = skylib::Keyword_t;
+    using OS_t                  = skylib::OS_t;
     using Player_t              = skylib::Player_t;
     using Reference_t           = skylib::Reference_t;
 
@@ -64,6 +65,7 @@ namespace doticu_skypal {
         using Handle_t          = skylib::Virtual::Handle_t;
         using Machine_t         = skylib::Virtual::Machine_t;
         using Object_t          = skylib::Virtual::Object_t;
+        using Stack_ID_t        = skylib::Virtual::Stack_ID_t;
         using Type_e            = skylib::Virtual::Type_e;
         using Variable_t        = skylib::Virtual::Variable_t;
 

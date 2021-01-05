@@ -65,26 +65,3 @@ ObjectReference[] function Filter_Keywords(ObjectReference[] refs, Keyword[] key
 ; if (mode == "<"): Sorts from closer to farther distance.
 ; if (mode == ">"): Sorts from farther to closer distance.
 ObjectReference[] function Sort_Distance(ObjectReference[] refs, ObjectReference from = none, string mode = "<") native global
-
-
-
-;/
-    Iterators:
-        It may actually be faster to let C++ iterate for you. Return true to keep iterating or false to stop.
-        If the script with the callback is extended from a Form (e.g. Quest) use Form_For_Each.
-        If the script with the callback is extended from an Alias, use Alias_For_Each.
-        If the script with the callback is extended from an ActiveMagicEffect, use Active_Magic_Effect_For_Each.
-        Global_For_Each can be used on any script, as long as the callabck has the global keyword on it.
-/;
-
-; callback: bool function My_Global_Callback(ObjectReference reference, int index, int end) global
-function Global_For_Each(ObjectReference[] refs, string script_name, string global_name) native global
-
-; callback: bool function My_Form_Method_Callback(ObjectReference reference, int index, int end)
-function Form_For_Each(Form this, ObjectReference[] refs, string script_name, string method_name) native global
-
-; callback: bool function My_Alias_Method_Callback(ObjectReference reference, int index, int end)
-function Alias_For_Each(Alias this, ObjectReference[] refs, string script_name, string method_name) native global
-
-; callback: bool function My_Active_Magic_Effect_Method_Callback(ObjectReference reference, int index, int end)
-function Active_Magic_Effect_For_Each(ActiveMagicEffect this, ObjectReference[] refs, string script_name, string method_name) native global

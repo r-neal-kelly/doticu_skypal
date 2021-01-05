@@ -63,11 +63,13 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\bases.cpp" />
     <ClCompile Include="src\consts.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\references.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\doticu_skypal\bases.h" />
     <ClInclude Include="include\doticu_skypal\consts.h" />
     <ClInclude Include="include\doticu_skypal\intrinsic.h" />
     <ClInclude Include="include\doticu_skypal\main.h" />

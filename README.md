@@ -25,7 +25,7 @@
         grid_refs = skypal_references.Sort_Distance(grid_refs, player, "<")
 
         ; skypal can iterate for you, which can help speed up loops
-        ; (We'll use the correct iterator for the "self" variable, which is a Form)
+        ; (We'll use the correct iterator for the "self" variable, which is a Form in this case)
         skypal_references.Form_For_Each(self, grid_refs, "MyQuest", "MyCallback")
     endFunction
 
