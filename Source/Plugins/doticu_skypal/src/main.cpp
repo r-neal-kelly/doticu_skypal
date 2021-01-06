@@ -94,18 +94,17 @@ namespace doticu_skypal {
     {
         String_t class_name = Class_Name();
 
-        #define STATIC(STATIC_NAME_, ARG_COUNT_, RETURN_TYPE_, STATIC_, ...)    \
-        SKYLIB_M                                                                \
-            BIND_STATIC(machine, class_name,                                    \
-                        STATIC_NAME_, ARG_COUNT_,                               \
-                        RETURN_TYPE_, STATIC_, __VA_ARGS__);                    \
+        #define STATIC(STATIC_NAME_, RETURN_TYPE_, STATIC_, ...)            \
+        SKYLIB_M                                                            \
+            BIND_STATIC(machine, class_name,                                \
+                        STATIC_NAME_, RETURN_TYPE_, STATIC_, __VA_ARGS__);  \
         SKYLIB_W
 
-        STATIC("Has_DLL", 0, Bool_t, Has_DLL);
+        STATIC("Has_DLL", Bool_t, Has_DLL);
 
-        STATIC("Microseconds", 0, Float_t, Microseconds);
-        STATIC("Milliseconds", 0, Float_t, Milliseconds);
-        STATIC("Seconds", 0, Float_t, Seconds);
+        STATIC("Microseconds", Float_t, Microseconds);
+        STATIC("Milliseconds", Float_t, Milliseconds);
+        STATIC("Seconds", Float_t, Seconds);
 
         #undef STATIC
     }

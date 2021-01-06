@@ -17,6 +17,24 @@ ObjectReference[] function Grid() native global
 
 
 ;/
+    Counters
+/;
+
+int function Count_Disabled(ObjectReference[] refs) native global
+int function Count_Enabled(ObjectReference[] refs) native global
+
+
+
+;/
+    Helpers
+/;
+
+function Disable(ObjectReference[] refs) native global
+function Enable(ObjectReference[] refs) native global
+
+
+
+;/
     Filters:
         Each filter has its modes listed above its signature.
         if (refs == none): Passes an empty array.
@@ -33,11 +51,19 @@ ObjectReference[] function Filter_Base_Form_Types(ObjectReference[] refs, int[] 
 ; if (mode == "!"): Passes all refs that do not have a base in the list.
 ObjectReference[] function Filter_Bases_Form_List(ObjectReference[] refs, FormList bases, string mode = "") native global
 
+; if (mode == ""): Passes all refs that are deleted.
+; if (mode == "!"): Passes all refs that are not deleted.
+ObjectReference[] function Filter_Deleted(ObjectReference[] refs, string mode = "") native global
+
 ; if (distance < 0.0): Uses 0.0.
 ; if (from == none): Uses the player reference.
 ; if (mode == "<"): Passes refs that are inside the distance.
 ; if (mode == ">"): Passes refs that are outside the distance.
 ObjectReference[] function Filter_Distance(ObjectReference[] refs, float distance, ObjectReference from = none, string mode = "<") native global
+
+; if (mode == ""): Passes all refs that are enabled.
+; if (mode == "!"): Passes all refs that are disabled.
+ObjectReference[] function Filter_Enabled(ObjectReference[] refs, string mode = "") native global
 
 ; if (form_types == none): Uses an empty array.
 ; if (mode == ""): Passes all refs that have a type in the list.

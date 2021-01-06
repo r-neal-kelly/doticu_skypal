@@ -10,17 +10,22 @@
 #include "doticu_skylib/component_keywords.h"
 
 #include "doticu_skylib/form.h"
+#include "doticu_skylib/form_factory.h"
 #include "doticu_skylib/form_type.h"
 #include "doticu_skylib/game.inl"
 #include "doticu_skylib/keyword.h"
+#include "doticu_skylib/os.h"
 #include "doticu_skylib/player.h"
 #include "doticu_skylib/reference.h"
+#include "doticu_skylib/script.h"
 
 #include "doticu_skylib/virtual_macros.h"
 
 #include "doticu_skylib/filter_base_form_types.h"
 #include "doticu_skylib/filter_bases.h"
+#include "doticu_skylib/filter_deleted.h"
 #include "doticu_skylib/filter_distances.h"
+#include "doticu_skylib/filter_enabled.h"
 #include "doticu_skylib/filter_form_types.h"
 #include "doticu_skylib/filter_keywords.h"
 
@@ -38,23 +43,30 @@ namespace doticu_skypal {
     {
         String_t class_name = Class_Name();
 
-        #define STATIC(STATIC_NAME_, ARG_COUNT_, RETURN_TYPE_, STATIC_, ...)    \
-        SKYLIB_M                                                                \
-            BIND_STATIC(machine, class_name,                                    \
-                        STATIC_NAME_, ARG_COUNT_,                               \
-                        RETURN_TYPE_, STATIC_, __VA_ARGS__);                    \
+        #define STATIC(STATIC_NAME_, RETURN_TYPE_, STATIC_, ...)            \
+        SKYLIB_M                                                            \
+            BIND_STATIC(machine, class_name,                                \
+                        STATIC_NAME_, RETURN_TYPE_, STATIC_, __VA_ARGS__);  \
         SKYLIB_W
 
-        STATIC("All", 0, Vector_t<Reference_t*>, All);
-        STATIC("Grid", 0, Vector_t<Reference_t*>, Grid);
+        STATIC("All", Vector_t<Reference_t*>, All);
+        STATIC("Grid", Vector_t<Reference_t*>, Grid);
 
-        STATIC("Filter_Base_Form_Types", 3, Vector_t<Reference_t*>, Filter_Base_Form_Types, Vector_t<Reference_t*>, Vector_t<Form_Type_e>, String_t);
-        STATIC("Filter_Bases_Form_List", 3, Vector_t<Reference_t*>, Filter_Bases_Form_List, Vector_t<Reference_t*>, Form_List_t*, String_t);
-        STATIC("Filter_Distance", 4, Vector_t<Reference_t*>, Filter_Distance, Vector_t<Reference_t*>, Float_t, Reference_t*, String_t);
-        STATIC("Filter_Form_Types", 3, Vector_t<Reference_t*>, Filter_Form_Types, Vector_t<Reference_t*>, Vector_t<Form_Type_e>, String_t);
-        STATIC("Filter_Keywords", 3, Vector_t<Reference_t*>, Filter_Keywords, Vector_t<Reference_t*>, Vector_t<Keyword_t*>, String_t);
+        STATIC("Count_Disabled", Int_t, Count_Disabled, Vector_t<Reference_t*>);
+        STATIC("Count_Enabled", Int_t, Count_Enabled, Vector_t<Reference_t*>);
 
-        STATIC("Sort_Distance", 3, Vector_t<Reference_t*>, Sort_Distance, Vector_t<Reference_t*>, Reference_t*, String_t);
+        STATIC("Disable", void, Disable, Vector_t<Reference_t*>);
+        STATIC("Enable", void, Enable, Vector_t<Reference_t*>);
+
+        STATIC("Filter_Base_Form_Types", Vector_t<Reference_t*>, Filter_Base_Form_Types, Vector_t<Reference_t*>, Vector_t<Form_Type_e>, String_t);
+        STATIC("Filter_Bases_Form_List", Vector_t<Reference_t*>, Filter_Bases_Form_List, Vector_t<Reference_t*>, Form_List_t*, String_t);
+        STATIC("Filter_Deleted", Vector_t<Reference_t*>, Filter_Deleted, Vector_t<Reference_t*>, String_t);
+        STATIC("Filter_Distance", Vector_t<Reference_t*>, Filter_Distance, Vector_t<Reference_t*>, Float_t, Reference_t*, String_t);
+        STATIC("Filter_Enabled", Vector_t<Reference_t*>, Filter_Enabled, Vector_t<Reference_t*>, String_t);
+        STATIC("Filter_Form_Types", Vector_t<Reference_t*>, Filter_Form_Types, Vector_t<Reference_t*>, Vector_t<Form_Type_e>, String_t);
+        STATIC("Filter_Keywords", Vector_t<Reference_t*>, Filter_Keywords, Vector_t<Reference_t*>, Vector_t<Keyword_t*>, String_t);
+
+        STATIC("Sort_Distance", Vector_t<Reference_t*>, Sort_Distance, Vector_t<Reference_t*>, Reference_t*, String_t);
 
         #undef STATIC
     }
@@ -69,6 +81,76 @@ namespace doticu_skypal {
     Vector_t<Reference_t*> References_t::Grid()
     {
         return *reinterpret_cast<Vector_t<Reference_t*>*>(&Reference_t::Loaded_Grid_References());
+    }
+
+    /* Counters */
+
+    Int_t References_t::Count_Disabled(Vector_t<Reference_t*> refs)
+    {
+        Int_t count = 0;
+
+        for (size_t idx = 0, end = refs.size(); idx < end; idx += 1) {
+            maybe<Reference_t*> ref = refs[idx];
+            if (ref && ref->Is_Disabled()) {
+                count += 1;
+            }
+        }
+
+        return count;
+    }
+
+    Int_t References_t::Count_Enabled(Vector_t<Reference_t*> refs)
+    {
+        Int_t count = 0;
+
+        for (size_t idx = 0, end = refs.size(); idx < end; idx += 1) {
+            maybe<Reference_t*> ref = refs[idx];
+            if (ref && ref->Is_Enabled()) {
+                count += 1;
+            }
+        }
+
+        return count;
+    }
+
+    /* Helpers */
+
+    void References_t::Disable(Vector_t<Reference_t*> refs)
+    {
+        maybe<Form_Factory_i*> script_factory = Form_Factory_i::Form_Factory(Form_Type_e::SCRIPT);
+        if (script_factory) {
+            maybe<Script_t*> script = static_cast<Script_t*>(script_factory->Create());
+            if (script) {
+                script->Command("Disable");
+                for (size_t idx = 0, end = refs.size(); idx < end; idx += 1) {
+                    maybe<Reference_t*> ref = refs[idx];
+                    if (ref) { // check if valid, deleted?
+                        script->Execute(ref());
+                    }
+                }
+                script->Deallocate_Command();
+                Game_t::Deallocate<Script_t>(script());
+            }
+        }
+    }
+
+    void References_t::Enable(Vector_t<Reference_t*> refs)
+    {
+        maybe<Form_Factory_i*> script_factory = Form_Factory_i::Form_Factory(Form_Type_e::SCRIPT);
+        if (script_factory) {
+            maybe<Script_t*> script = static_cast<Script_t*>(script_factory->Create());
+            if (script) {
+                script->Command("Enable");
+                for (size_t idx = 0, end = refs.size(); idx < end; idx += 1) {
+                    maybe<Reference_t*> ref = refs[idx];
+                    if (ref) { // check if valid, deleted?
+                        script->Execute(ref());
+                    }
+                }
+                script->Deallocate_Command();
+                Game_t::Deallocate<Script_t>(script());
+            }
+        }
     }
 
     /* Filters */
@@ -115,6 +197,23 @@ namespace doticu_skypal {
         return *state.Results();
     }
 
+    Vector_t<Reference_t*> References_t::Filter_Deleted(Vector_t<Reference_t*> refs, String_t mode)
+    {
+        Vector_t<Reference_t*>& read = refs;
+        Vector_t<Reference_t*> write;
+        write.reserve(read.size() / 2);
+
+        Filter::State_c<Reference_t*> state(&read, &write);
+
+        if (CString_t::Starts_With("!", mode, true)) {
+            Filter::Deleted_t<Reference_t*>(state).NOT_EQUAL_TO();
+        } else {
+            Filter::Deleted_t<Reference_t*>(state).EQUAL_TO();
+        }
+
+        return *state.Results();
+    }
+
     Vector_t<Reference_t*> References_t::Filter_Distance(Vector_t<Reference_t*> refs,
                                                          Float_t distance,
                                                          Reference_t* from,
@@ -131,6 +230,24 @@ namespace doticu_skypal {
             Filter::Distances_t<Reference_t*>(state).GREATER_THAN(distance, from, false);
         } else {
             Filter::Distances_t<Reference_t*>(state).LESS_THAN(distance, from, false);
+        }
+
+        return *state.Results();
+    }
+
+    Vector_t<Reference_t*> References_t::Filter_Enabled(Vector_t<Reference_t*> refs,
+                                                        String_t mode)
+    {
+        Vector_t<Reference_t*>& read = refs;
+        Vector_t<Reference_t*> write;
+        write.reserve(read.size() / 2);
+
+        Filter::State_c<Reference_t*> state(&read, &write);
+
+        if (CString_t::Starts_With("!", mode, true)) {
+            Filter::Enabled_t<Reference_t*>(state).NOT_EQUAL_TO();
+        } else {
+            Filter::Enabled_t<Reference_t*>(state).EQUAL_TO();
         }
 
         return *state.Results();

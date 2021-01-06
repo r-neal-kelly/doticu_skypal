@@ -4,6 +4,8 @@
 
 #include "doticu_skylib/enum_operator.h"
 
+#include "doticu_skylib/reference.h"
+
 #include "doticu_skylib/virtual_macros.h"
 
 #include "doticu_skypal/main.h"
@@ -20,14 +22,13 @@ namespace doticu_skypal {
     {
         String_t class_name = Class_Name();
 
-        #define STATIC(STATIC_NAME_, ARG_COUNT_, RETURN_TYPE_, STATIC_, ...)    \
-        SKYLIB_M                                                                \
-            BIND_STATIC(machine, class_name,                                    \
-                        STATIC_NAME_, ARG_COUNT_,                               \
-                        RETURN_TYPE_, STATIC_, __VA_ARGS__);                    \
+        #define STATIC(STATIC_NAME_, RETURN_TYPE_, STATIC_, ...)            \
+        SKYLIB_M                                                            \
+            BIND_STATIC(machine, class_name,                                \
+                        STATIC_NAME_, RETURN_TYPE_, STATIC_, __VA_ARGS__);  \
         SKYLIB_W
 
-        STATIC("From_References", 2, Vector_t<Form_t*>, From_References, Vector_t<Reference_t*>, String_t);
+        STATIC("From_References", Vector_t<Form_t*>, From_References, Vector_t<Reference_t*>, String_t);
 
         #undef STATIC
     }
