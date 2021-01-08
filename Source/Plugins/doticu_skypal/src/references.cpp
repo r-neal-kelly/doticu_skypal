@@ -29,6 +29,8 @@
 #include "doticu_skylib/filter_enabled.h"
 #include "doticu_skylib/filter_form_types.h"
 #include "doticu_skylib/filter_keywords.h"
+#include "doticu_skylib/filter_owners.h"
+#include "doticu_skylib/filter_potential_thieves.h"
 
 #include "doticu_skypal/main.h"
 #include "doticu_skypal/references.h"
@@ -66,6 +68,8 @@ namespace doticu_skypal {
         STATIC("Filter_Enabled", false, Vector_t<Reference_t*>, Filter_Enabled, Vector_t<Reference_t*>, String_t);
         STATIC("Filter_Form_Types", false, Vector_t<Reference_t*>, Filter_Form_Types, Vector_t<Reference_t*>, Vector_t<Form_Type_e>, String_t);
         STATIC("Filter_Keywords", false, Vector_t<Reference_t*>, Filter_Keywords, Vector_t<Reference_t*>, Vector_t<Keyword_t*>, String_t);
+        STATIC("Filter_Owners", false, Vector_t<Reference_t*>, Filter_Owners, Vector_t<Reference_t*>, Vector_t<Actor_t*>, String_t);
+        STATIC("Filter_Potential_Thieves", false, Vector_t<Reference_t*>, Filter_Potential_Thieves, Vector_t<Reference_t*>, Vector_t<Actor_t*>, String_t);
 
         STATIC("Sort_Distance", false, Vector_t<Reference_t*>, Sort_Distance, Vector_t<Reference_t*>, Reference_t*, String_t);
 
@@ -303,6 +307,70 @@ namespace doticu_skypal {
             Filter::Keywords_t<Reference_t*>(state).XNOR<Vector_t<some<Keyword_t*>>&>(some_keywords);
         } else {
             Filter::Keywords_t<Reference_t*>(state).OR<Vector_t<some<Keyword_t*>>&>(some_keywords);
+        }
+
+        return *state.Results();
+    }
+
+    Vector_t<Reference_t*> References_t::Filter_Owners(Vector_t<Reference_t*> refs,
+                                                       Vector_t<Actor_t*> owners,
+                                                       String_t mode)
+    {
+        Vector_t<Reference_t*>& read = refs;
+        Vector_t<Reference_t*> write;
+        write.reserve(read.size() / 2);
+
+        Filter::State_c<Reference_t*> state(&read, &write);
+
+        Vector_t<some<Actor_t*>>& some_owners = Main_t::Validate_Formables(owners);
+
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode.data);
+        if (logic_gate == Logic_Gate_e::OR) {
+            Filter::Owners_t<Reference_t*>(state).OR<Vector_t<some<Actor_t*>>&>(some_owners);
+        } else if (logic_gate == Logic_Gate_e::AND) {
+            Filter::Owners_t<Reference_t*>(state).AND<Vector_t<some<Actor_t*>>&>(some_owners);
+        } else if (logic_gate == Logic_Gate_e::XOR) {
+            Filter::Owners_t<Reference_t*>(state).XOR<Vector_t<some<Actor_t*>>&>(some_owners);
+        } else if (logic_gate == Logic_Gate_e::NOR) {
+            Filter::Owners_t<Reference_t*>(state).NOR<Vector_t<some<Actor_t*>>&>(some_owners);
+        } else if (logic_gate == Logic_Gate_e::NAND) {
+            Filter::Owners_t<Reference_t*>(state).NAND<Vector_t<some<Actor_t*>>&>(some_owners);
+        } else if (logic_gate == Logic_Gate_e::XNOR) {
+            Filter::Owners_t<Reference_t*>(state).XNOR<Vector_t<some<Actor_t*>>&>(some_owners);
+        } else {
+            Filter::Owners_t<Reference_t*>(state).OR<Vector_t<some<Actor_t*>>&>(some_owners);
+        }
+
+        return *state.Results();
+    }
+
+    Vector_t<Reference_t*> References_t::Filter_Potential_Thieves(Vector_t<Reference_t*> refs,
+                                                                  Vector_t<Actor_t*> potential_thieves,
+                                                                  String_t mode)
+    {
+        Vector_t<Reference_t*>& read = refs;
+        Vector_t<Reference_t*> write;
+        write.reserve(read.size() / 2);
+
+        Filter::State_c<Reference_t*> state(&read, &write);
+
+        Vector_t<some<Actor_t*>>& some_potential_thieves = Main_t::Validate_Formables(potential_thieves);
+
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode.data);
+        if (logic_gate == Logic_Gate_e::OR) {
+            Filter::Potential_Thieves_t<Reference_t*>(state).OR<Vector_t<some<Actor_t*>>&>(some_potential_thieves);
+        } else if (logic_gate == Logic_Gate_e::AND) {
+            Filter::Potential_Thieves_t<Reference_t*>(state).AND<Vector_t<some<Actor_t*>>&>(some_potential_thieves);
+        } else if (logic_gate == Logic_Gate_e::XOR) {
+            Filter::Potential_Thieves_t<Reference_t*>(state).XOR<Vector_t<some<Actor_t*>>&>(some_potential_thieves);
+        } else if (logic_gate == Logic_Gate_e::NOR) {
+            Filter::Potential_Thieves_t<Reference_t*>(state).NOR<Vector_t<some<Actor_t*>>&>(some_potential_thieves);
+        } else if (logic_gate == Logic_Gate_e::NAND) {
+            Filter::Potential_Thieves_t<Reference_t*>(state).NAND<Vector_t<some<Actor_t*>>&>(some_potential_thieves);
+        } else if (logic_gate == Logic_Gate_e::XNOR) {
+            Filter::Potential_Thieves_t<Reference_t*>(state).XNOR<Vector_t<some<Actor_t*>>&>(some_potential_thieves);
+        } else {
+            Filter::Potential_Thieves_t<Reference_t*>(state).OR<Vector_t<some<Actor_t*>>&>(some_potential_thieves);
         }
 
         return *state.Results();

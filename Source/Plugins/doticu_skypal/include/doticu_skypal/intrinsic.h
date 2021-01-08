@@ -49,6 +49,7 @@ namespace doticu_skypal {
     using Operator_e            = skylib::Operator_e;
 
     using Active_Magic_Effect_t = skylib::Active_Magic_Effect_t;
+    using Actor_t               = skylib::Actor_t;
     using Alias_Base_t          = skylib::Alias_Base_t;
     using Form_t                = skylib::Form_t;
     using Form_Factory_i        = skylib::Form_Factory_i;
@@ -89,6 +90,8 @@ namespace doticu_skypal {
         template <typename T> using Enabled_t           = skylib::Filter::Enabled_t<T>;
         template <typename T> using Form_Types_t        = skylib::Filter::Form_Types_t<T>;
         template <typename T> using Keywords_t          = skylib::Filter::Keywords_t<T>;
+        template <typename T> using Owners_t            = skylib::Filter::Owners_t<T>;
+        template <typename T> using Potential_Thieves_t = skylib::Filter::Potential_Thieves_t<T>;
 
     }
 

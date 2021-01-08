@@ -79,6 +79,26 @@ ObjectReference[] function Filter_Form_Types(ObjectReference[] refs, int[] form_
 ; if (mode == "!^"): Passes refs that match 0 or more than 1 keyword. (XNOR Gate)
 ObjectReference[] function Filter_Keywords(ObjectReference[] refs, Keyword[] keywords, string mode = "|") native global
 
+; checks Factions/ActorBase owners on Cell, EncounterZone, Worldspace, and ObjectReference
+; if (owners == none): Passes an empty array.
+; if (mode == "|"): Passes refs that have any of the owners. (OR Gate)
+; if (mode == "&"): Passes refs that have all of the owners. (AND Gate)
+; if (mode == "^"): Passes refs that have exactly one of the owners. (XOR Gate)
+; if (mode == "!|"): Passes refs that have none of the owners. (NOR Gate)
+; if (mode == "!&"): Passes refs that do not have all of the owners. (NAND Gate)
+; if (mode == "!^"): Passes refs that have 0 or more than 1 of the owners. (XNOR Gate)
+ObjectReference[] function Filter_Owners(ObjectReference[] refs, Actor[] owners, string mode = "|") native global
+
+; checks Factions/ActorBase owners on Cell, EncounterZone, Worldspace, and ObjectReference
+; if (potential_thieves == none): Passes an empty array.
+; if (mode == "|"): Passes refs that have any of the potential thieves. (OR Gate)
+; if (mode == "&"): Passes refs that have all of the potential thieves. (AND Gate)
+; if (mode == "^"): Passes refs that have exactly one of the potential theives. (XOR Gate)
+; if (mode == "!|"): Passes refs that have none of the potential thieves. (NOR Gate)
+; if (mode == "!&"): Passes refs that do not have all of the potential thieves. (NAND Gate)
+; if (mode == "!^"): Passes refs that have 0 or more than 1 of the potential thieves. (XNOR Gate)
+ObjectReference[] function Filter_Potential_Thieves(ObjectReference[] refs, Actor[] potential_thieves, string mode = "|") native global
+
 
 
 ;/

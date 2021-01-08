@@ -36,6 +36,8 @@ namespace doticu_skypal {
         static Vector_t<Reference_t*>   Filter_Enabled(Vector_t<Reference_t*> refs, String_t mode = "");
         static Vector_t<Reference_t*>   Filter_Form_Types(Vector_t<Reference_t*> refs, Vector_t<Form_Type_e> form_types, String_t mode = "");
         static Vector_t<Reference_t*>   Filter_Keywords(Vector_t<Reference_t*> refs, Vector_t<Keyword_t*> keywords, String_t mode = "|");
+        static Vector_t<Reference_t*>   Filter_Owners(Vector_t<Reference_t*> refs, Vector_t<Actor_t*> owners, String_t mode = "|");
+        static Vector_t<Reference_t*>   Filter_Potential_Thieves(Vector_t<Reference_t*> refs, Vector_t<Actor_t*> potential_thieves, String_t mode = "|");
 
     public:
         static Vector_t<Reference_t*>   Sort_Any_Name(Vector_t<Reference_t*> refs, String_t mode = "");

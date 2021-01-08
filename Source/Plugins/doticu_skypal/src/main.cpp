@@ -102,6 +102,7 @@ namespace doticu_skypal {
 
         STATIC("Has_DLL", false, Bool_t, Has_DLL);
 
+        STATIC("Microseconds", false, Float_t, Microseconds);
         STATIC("Milliseconds", false, Float_t, Milliseconds);
         STATIC("Seconds", false, Float_t, Seconds);
 
