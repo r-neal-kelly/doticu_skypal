@@ -11,6 +11,7 @@
 
 #include "doticu_skylib/form.h"
 #include "doticu_skylib/form_factory.h"
+#include "doticu_skylib/form_list.h"
 #include "doticu_skylib/form_type.h"
 #include "doticu_skylib/game.inl"
 #include "doticu_skylib/keyword.h"
@@ -43,30 +44,30 @@ namespace doticu_skypal {
     {
         String_t class_name = Class_Name();
 
-        #define STATIC(STATIC_NAME_, RETURN_TYPE_, STATIC_, ...)            \
-        SKYLIB_M                                                            \
-            BIND_STATIC(machine, class_name,                                \
-                        STATIC_NAME_, RETURN_TYPE_, STATIC_, __VA_ARGS__);  \
+        #define STATIC(STATIC_NAME_, WAITS_FOR_FRAME_, RETURN_TYPE_, STATIC_, ...)  \
+        SKYLIB_M                                                                    \
+            BIND_STATIC(machine, class_name, STATIC_NAME_, WAITS_FOR_FRAME_,        \
+                        RETURN_TYPE_, STATIC_, __VA_ARGS__);                        \
         SKYLIB_W
 
-        STATIC("All", Vector_t<Reference_t*>, All);
-        STATIC("Grid", Vector_t<Reference_t*>, Grid);
+        STATIC("All", false, Vector_t<Reference_t*>, All);
+        STATIC("Grid", false, Vector_t<Reference_t*>, Grid);
 
-        STATIC("Count_Disabled", Int_t, Count_Disabled, Vector_t<Reference_t*>);
-        STATIC("Count_Enabled", Int_t, Count_Enabled, Vector_t<Reference_t*>);
+        STATIC("Count_Disabled", false, Int_t, Count_Disabled, Vector_t<Reference_t*>);
+        STATIC("Count_Enabled", false, Int_t, Count_Enabled, Vector_t<Reference_t*>);
 
-        STATIC("Disable", void, Disable, Vector_t<Reference_t*>);
-        STATIC("Enable", void, Enable, Vector_t<Reference_t*>);
+        STATIC("Disable", false, void, Disable, Vector_t<Reference_t*>);
+        STATIC("Enable", false, void, Enable, Vector_t<Reference_t*>);
 
-        STATIC("Filter_Base_Form_Types", Vector_t<Reference_t*>, Filter_Base_Form_Types, Vector_t<Reference_t*>, Vector_t<Form_Type_e>, String_t);
-        STATIC("Filter_Bases_Form_List", Vector_t<Reference_t*>, Filter_Bases_Form_List, Vector_t<Reference_t*>, Form_List_t*, String_t);
-        STATIC("Filter_Deleted", Vector_t<Reference_t*>, Filter_Deleted, Vector_t<Reference_t*>, String_t);
-        STATIC("Filter_Distance", Vector_t<Reference_t*>, Filter_Distance, Vector_t<Reference_t*>, Float_t, Reference_t*, String_t);
-        STATIC("Filter_Enabled", Vector_t<Reference_t*>, Filter_Enabled, Vector_t<Reference_t*>, String_t);
-        STATIC("Filter_Form_Types", Vector_t<Reference_t*>, Filter_Form_Types, Vector_t<Reference_t*>, Vector_t<Form_Type_e>, String_t);
-        STATIC("Filter_Keywords", Vector_t<Reference_t*>, Filter_Keywords, Vector_t<Reference_t*>, Vector_t<Keyword_t*>, String_t);
+        STATIC("Filter_Base_Form_Types", false, Vector_t<Reference_t*>, Filter_Base_Form_Types, Vector_t<Reference_t*>, Vector_t<Form_Type_e>, String_t);
+        STATIC("Filter_Bases_Form_List", false, Vector_t<Reference_t*>, Filter_Bases_Form_List, Vector_t<Reference_t*>, Form_List_t*, String_t);
+        STATIC("Filter_Deleted", false, Vector_t<Reference_t*>, Filter_Deleted, Vector_t<Reference_t*>, String_t);
+        STATIC("Filter_Distance", false, Vector_t<Reference_t*>, Filter_Distance, Vector_t<Reference_t*>, Float_t, Reference_t*, String_t);
+        STATIC("Filter_Enabled", false, Vector_t<Reference_t*>, Filter_Enabled, Vector_t<Reference_t*>, String_t);
+        STATIC("Filter_Form_Types", false, Vector_t<Reference_t*>, Filter_Form_Types, Vector_t<Reference_t*>, Vector_t<Form_Type_e>, String_t);
+        STATIC("Filter_Keywords", false, Vector_t<Reference_t*>, Filter_Keywords, Vector_t<Reference_t*>, Vector_t<Keyword_t*>, String_t);
 
-        STATIC("Sort_Distance", Vector_t<Reference_t*>, Sort_Distance, Vector_t<Reference_t*>, Reference_t*, String_t);
+        STATIC("Sort_Distance", false, Vector_t<Reference_t*>, Sort_Distance, Vector_t<Reference_t*>, Reference_t*, String_t);
 
         #undef STATIC
     }

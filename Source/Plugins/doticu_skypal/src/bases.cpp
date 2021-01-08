@@ -22,13 +22,13 @@ namespace doticu_skypal {
     {
         String_t class_name = Class_Name();
 
-        #define STATIC(STATIC_NAME_, RETURN_TYPE_, STATIC_, ...)            \
-        SKYLIB_M                                                            \
-            BIND_STATIC(machine, class_name,                                \
-                        STATIC_NAME_, RETURN_TYPE_, STATIC_, __VA_ARGS__);  \
+        #define STATIC(STATIC_NAME_, WAITS_FOR_FRAME_, RETURN_TYPE_, STATIC_, ...)  \
+        SKYLIB_M                                                                    \
+            BIND_STATIC(machine, class_name, STATIC_NAME_, WAITS_FOR_FRAME_,        \
+                        RETURN_TYPE_, STATIC_, __VA_ARGS__);                        \
         SKYLIB_W
 
-        STATIC("From_References", Vector_t<Form_t*>, From_References, Vector_t<Reference_t*>, String_t);
+        STATIC("From_References", false, Vector_t<Form_t*>, From_References, Vector_t<Reference_t*>, String_t);
 
         #undef STATIC
     }
