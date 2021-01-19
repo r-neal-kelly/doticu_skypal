@@ -102,6 +102,8 @@ namespace doticu_skypal {
 
         STATIC("Has_DLL", false, Bool_t, Has_DLL);
 
+        STATIC("Has_Version", false, Bool_t, Has_Version, Int_t, Int_t, Int_t, String_t);
+
         STATIC("Microseconds", false, Float_t, Microseconds);
         STATIC("Milliseconds", false, Float_t, Milliseconds);
         STATIC("Seconds", false, Float_t, Seconds);
@@ -146,6 +148,27 @@ namespace doticu_skypal {
     Bool_t Main_t::Has_DLL()
     {
         return true;
+    }
+
+    Bool_t Main_t::Has_Version(Int_t major, Int_t minor, Int_t patch, String_t mode)
+    {
+        Version_t<u16> version(major, minor, patch);
+
+        if (CString_t::Is_Same("==", mode, true)) {
+            return Consts_t::Skylib::Current_Version() == version;
+        } else if (CString_t::Is_Same("!=", mode, true)) {
+            return Consts_t::Skylib::Current_Version() != version;
+        } else if (CString_t::Is_Same("<", mode, true)) {
+            return Consts_t::Skylib::Current_Version() < version;
+        } else if (CString_t::Is_Same(">", mode, true)) {
+            return Consts_t::Skylib::Current_Version() > version;
+        } else if (CString_t::Is_Same("<=", mode, true)) {
+            return Consts_t::Skylib::Current_Version() <= version;
+        } else if (CString_t::Is_Same(">=", mode, true)) {
+            return Consts_t::Skylib::Current_Version() >= version;
+        } else {
+            return Consts_t::Skylib::Current_Version() == version;
+        }
     }
 
     Float_t Main_t::Microseconds()

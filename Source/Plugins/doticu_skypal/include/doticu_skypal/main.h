@@ -39,6 +39,7 @@ namespace doticu_skypal {
 
     public:
         static Bool_t Has_DLL();
+        static Bool_t Has_Version(Int_t major, Int_t minor, Int_t patch, String_t mode = "==");
 
     public:
         static Float_t Microseconds();

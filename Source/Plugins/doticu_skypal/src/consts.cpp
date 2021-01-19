@@ -12,7 +12,7 @@ namespace doticu_skypal {
 
     const Version_t<u16> Consts_t::Skyrim::Required_Version()   { DEFINE_VERSION(u16, 1, 5, 97, 0); }
 
-    const Version_t<u16> Consts_t::SKSE::Minimum_Version()  { DEFINE_VERSION(u16, 2, 0, 17, 0); }
+    const Version_t<u16> Consts_t::SKSE::Minimum_Version()  { DEFINE_VERSION(u16, 2, 0, 17); }
 
     const Version_t<u16> Consts_t::Skylib::Current_Version()    { DEFINE_VERSION(u16, 1, 0, 0); }
 

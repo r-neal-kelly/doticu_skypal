@@ -1,6 +1,6 @@
 ; Copyright © 2020 r-neal-kelly, aka doticu
 
-Scriptname skypal_bases hidden
+Scriptname SkyPal_Bases hidden
 
 ;/
     Converters:
