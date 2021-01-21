@@ -155,19 +155,19 @@ namespace doticu_skypal {
         Version_t<u16> version(major, minor, patch);
 
         if (CString_t::Is_Same("==", mode, true)) {
-            return Consts_t::Skylib::Current_Version() == version;
+            return Consts_t::SkyPal::Current_Version() == version;
         } else if (CString_t::Is_Same("!=", mode, true)) {
-            return Consts_t::Skylib::Current_Version() != version;
+            return Consts_t::SkyPal::Current_Version() != version;
         } else if (CString_t::Is_Same("<", mode, true)) {
-            return Consts_t::Skylib::Current_Version() < version;
+            return Consts_t::SkyPal::Current_Version() < version;
         } else if (CString_t::Is_Same(">", mode, true)) {
-            return Consts_t::Skylib::Current_Version() > version;
+            return Consts_t::SkyPal::Current_Version() > version;
         } else if (CString_t::Is_Same("<=", mode, true)) {
-            return Consts_t::Skylib::Current_Version() <= version;
+            return Consts_t::SkyPal::Current_Version() <= version;
         } else if (CString_t::Is_Same(">=", mode, true)) {
-            return Consts_t::Skylib::Current_Version() >= version;
+            return Consts_t::SkyPal::Current_Version() >= version;
         } else {
-            return Consts_t::Skylib::Current_Version() == version;
+            return Consts_t::SkyPal::Current_Version() == version;
         }
     }
 

@@ -23,7 +23,7 @@ namespace doticu_skypal {
             static const Version_t<u16> Minimum_Version();
         };
 
-        class Skylib
+        class SkyPal
         {
         public:
             static const Version_t<u16> Current_Version();
