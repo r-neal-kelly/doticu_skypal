@@ -58,6 +58,7 @@ namespace doticu_skypal {
         STATIC("Count_Disabled", false, Int_t, Count_Disabled, Vector_t<Reference_t*>);
         STATIC("Count_Enabled", false, Int_t, Count_Enabled, Vector_t<Reference_t*>);
 
+        STATIC("Change_Collision_Layer", false, void, Change_Collision_Layer, Vector_t<Reference_t*>, Int_t);
         STATIC("Disable", false, void, Disable, Vector_t<Reference_t*>);
         STATIC("Enable", false, void, Enable, Vector_t<Reference_t*>);
 
@@ -119,6 +120,19 @@ namespace doticu_skypal {
     }
 
     /* Helpers */
+
+    void References_t::Change_Collision_Layer(Vector_t<Reference_t*> refs, Int_t collision_layer_type)
+    {
+        maybe<Collision_Layer_Type_e> collision_layer_type_e = collision_layer_type;
+        if (collision_layer_type_e) {
+            for (size_t idx = 0, end = refs.size(); idx < end; idx += 1) {
+                maybe<Reference_t*> ref = refs[idx];
+                if (ref) {
+                    ref->Collision_Layer_Type(collision_layer_type_e());
+                }
+            }
+        }
+    }
 
     void References_t::Disable(Vector_t<Reference_t*> refs)
     {

@@ -25,6 +25,7 @@ namespace doticu_skypal {
         static Int_t                    Count_Enabled(Vector_t<Reference_t*> refs);
 
     public:
+        static void                     Change_Collision_Layer(Vector_t<Reference_t*> refs, Int_t collision_layer_type);
         static void                     Disable(Vector_t<Reference_t*> refs);
         static void                     Enable(Vector_t<Reference_t*> refs);
 

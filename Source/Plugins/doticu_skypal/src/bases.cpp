@@ -46,14 +46,14 @@ namespace doticu_skypal {
             for (size_t idx = 0, end = some_ref_count; idx < end; idx += 1) {
                 some<Reference_t*> ref = some_refs[idx];
                 if (ref->base_form) {
-                    some_bases.push_back(ref->base_form);
+                    some_bases.push_back(ref->base_form());
                 }
             }
         } else {
             for (size_t idx = 0, end = some_ref_count; idx < end; idx += 1) {
                 some<Reference_t*> ref = some_refs[idx];
-                if (ref->base_form && !some_bases.Has(ref->base_form)) {
-                    some_bases.push_back(ref->base_form);
+                if (ref->base_form && !some_bases.Has(ref->base_form())) {
+                    some_bases.push_back(ref->base_form());
                 }
             }
         }
