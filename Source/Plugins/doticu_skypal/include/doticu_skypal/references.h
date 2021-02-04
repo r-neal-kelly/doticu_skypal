@@ -25,13 +25,14 @@ namespace doticu_skypal {
         static Int_t                    Count_Enabled(Vector_t<Reference_t*> refs);
 
     public:
-        static void                     Change_Collision_Layer(Vector_t<Reference_t*> refs, Int_t collision_layer_type);
+        static void                     Change_Collision_Layer_Type(Vector_t<Reference_t*> refs, Collision_Layer_Type_e collision_layer_type);
         static void                     Disable(Vector_t<Reference_t*> refs);
         static void                     Enable(Vector_t<Reference_t*> refs);
 
     public:
         static Vector_t<Reference_t*>   Filter_Base_Form_Types(Vector_t<Reference_t*> refs, Vector_t<Form_Type_e> form_types, String_t mode = "");
         static Vector_t<Reference_t*>   Filter_Bases_Form_List(Vector_t<Reference_t*> refs, Form_List_t* bases, String_t mode = "");
+        static Vector_t<Reference_t*>   Filter_Collision_Layer_Types(Vector_t<Reference_t*> refs, Vector_t<Collision_Layer_Type_e> collision_layer_types, String_t mode = "");
         static Vector_t<Reference_t*>   Filter_Deleted(Vector_t<Reference_t*> refs, String_t mode = "");
         static Vector_t<Reference_t*>   Filter_Distance(Vector_t<Reference_t*> refs, Float_t distance, Reference_t* from = nullptr, String_t mode = "<");
         static Vector_t<Reference_t*>   Filter_Enabled(Vector_t<Reference_t*> refs, String_t mode = "");

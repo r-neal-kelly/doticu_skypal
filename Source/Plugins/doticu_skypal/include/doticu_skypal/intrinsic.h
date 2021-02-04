@@ -84,17 +84,18 @@ namespace doticu_skypal {
 
     namespace Filter {
 
-        template <typename T> using State_c             = skylib::Filter::State_c<T>;
+        template <typename T> using State_c                 = skylib::Filter::State_c<T>;
 
-        template <typename T> using Base_Form_Types_t   = skylib::Filter::Base_Form_Types_t<T>;
-        template <typename T> using Bases_t             = skylib::Filter::Bases_t<T>;
-        template <typename T> using Deleted_t           = skylib::Filter::Deleted_t<T>;
-        template <typename T> using Distances_t         = skylib::Filter::Distances_t<T>;
-        template <typename T> using Enabled_t           = skylib::Filter::Enabled_t<T>;
-        template <typename T> using Form_Types_t        = skylib::Filter::Form_Types_t<T>;
-        template <typename T> using Keywords_t          = skylib::Filter::Keywords_t<T>;
-        template <typename T> using Owners_t            = skylib::Filter::Owners_t<T>;
-        template <typename T> using Potential_Thieves_t = skylib::Filter::Potential_Thieves_t<T>;
+        template <typename T> using Base_Form_Types_t       = skylib::Filter::Base_Form_Types_t<T>;
+        template <typename T> using Bases_t                 = skylib::Filter::Bases_t<T>;
+        template <typename T> using Collision_Layer_Types_t = skylib::Filter::Collision_Layer_Types_t<T>;
+        template <typename T> using Deleted_t               = skylib::Filter::Deleted_t<T>;
+        template <typename T> using Distances_t             = skylib::Filter::Distances_t<T>;
+        template <typename T> using Enabled_t               = skylib::Filter::Enabled_t<T>;
+        template <typename T> using Form_Types_t            = skylib::Filter::Form_Types_t<T>;
+        template <typename T> using Keywords_t              = skylib::Filter::Keywords_t<T>;
+        template <typename T> using Owners_t                = skylib::Filter::Owners_t<T>;
+        template <typename T> using Potential_Thieves_t     = skylib::Filter::Potential_Thieves_t<T>;
 
     }
 

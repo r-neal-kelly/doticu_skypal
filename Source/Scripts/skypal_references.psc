@@ -34,7 +34,7 @@ int function Count_Enabled(ObjectReference[] refs) native global
 ; If a ref is an actor, the setting will need to be reapplied more often, e.g. after enable.
 ; Regular refs will have this setting stick as long as they have 3D (needs to be verified.)
 ; if (collision_layer_type == invalid): Nothing is changed.
-function Change_Collision_Layer(ObjectReference[] refs, int collision_layer_type) native global
+function Change_Collision_Layer_Type(ObjectReference[] refs, int collision_layer_type) native global
 
 function Disable(ObjectReference[] refs) native global
 function Enable(ObjectReference[] refs) native global
@@ -57,6 +57,12 @@ ObjectReference[] function Filter_Base_Form_Types(ObjectReference[] refs, int[] 
 ; if (mode == ""): Passes all refs that have a base in the list.
 ; if (mode == "!"): Passes all refs that do not have a base in the list.
 ObjectReference[] function Filter_Bases_Form_List(ObjectReference[] refs, FormList bases, string mode = "") native global
+
+; if (collision_layer_types == none): Uses an empty array.
+; if (mode == ""): Passes all refs that have a collision layer type in the list.
+; if (mode == "!"): Passes all refs that do not have a collision layer type in the list.
+; refs that have no collision layer type are invalid and never pass.
+ObjectReference[] function Filter_Collision_Layer_Types(ObjectReference[] refs, int[] collision_layer_types, string mode = "") native global
 
 ; if (mode == ""): Passes all refs that are deleted.
 ; if (mode == "!"): Passes all refs that are not deleted.

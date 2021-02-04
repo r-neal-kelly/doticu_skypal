@@ -24,6 +24,7 @@
 
 #include "doticu_skylib/filter_base_form_types.h"
 #include "doticu_skylib/filter_bases.h"
+#include "doticu_skylib/filter_collision_layer_types.h"
 #include "doticu_skylib/filter_deleted.h"
 #include "doticu_skylib/filter_distances.h"
 #include "doticu_skylib/filter_enabled.h"
@@ -58,12 +59,13 @@ namespace doticu_skypal {
         STATIC("Count_Disabled", false, Int_t, Count_Disabled, Vector_t<Reference_t*>);
         STATIC("Count_Enabled", false, Int_t, Count_Enabled, Vector_t<Reference_t*>);
 
-        STATIC("Change_Collision_Layer", false, void, Change_Collision_Layer, Vector_t<Reference_t*>, Int_t);
+        STATIC("Change_Collision_Layer_Type", false, void, Change_Collision_Layer_Type, Vector_t<Reference_t*>, Collision_Layer_Type_e);
         STATIC("Disable", false, void, Disable, Vector_t<Reference_t*>);
         STATIC("Enable", false, void, Enable, Vector_t<Reference_t*>);
 
         STATIC("Filter_Base_Form_Types", false, Vector_t<Reference_t*>, Filter_Base_Form_Types, Vector_t<Reference_t*>, Vector_t<Form_Type_e>, String_t);
         STATIC("Filter_Bases_Form_List", false, Vector_t<Reference_t*>, Filter_Bases_Form_List, Vector_t<Reference_t*>, Form_List_t*, String_t);
+        STATIC("Filter_Collision_Layer_Types", false, Vector_t<Reference_t*>, Filter_Collision_Layer_Types, Vector_t<Reference_t*>, Vector_t<Collision_Layer_Type_e>, String_t);
         STATIC("Filter_Deleted", false, Vector_t<Reference_t*>, Filter_Deleted, Vector_t<Reference_t*>, String_t);
         STATIC("Filter_Distance", false, Vector_t<Reference_t*>, Filter_Distance, Vector_t<Reference_t*>, Float_t, Reference_t*, String_t);
         STATIC("Filter_Enabled", false, Vector_t<Reference_t*>, Filter_Enabled, Vector_t<Reference_t*>, String_t);
@@ -121,14 +123,13 @@ namespace doticu_skypal {
 
     /* Helpers */
 
-    void References_t::Change_Collision_Layer(Vector_t<Reference_t*> refs, Int_t collision_layer_type)
+    void References_t::Change_Collision_Layer_Type(Vector_t<Reference_t*> refs, Collision_Layer_Type_e collision_layer_type)
     {
-        maybe<Collision_Layer_Type_e> collision_layer_type_e = collision_layer_type;
-        if (collision_layer_type_e) {
+        if (collision_layer_type) {
             for (size_t idx = 0, end = refs.size(); idx < end; idx += 1) {
                 maybe<Reference_t*> ref = refs[idx];
                 if (ref) {
-                    ref->Collision_Layer_Type(collision_layer_type_e());
+                    ref->Collision_Layer_Type(collision_layer_type);
                 }
             }
         }
@@ -211,6 +212,33 @@ namespace doticu_skypal {
             Filter::Bases_t<Reference_t*>(state).OR(bases, true);
         } else {
             Filter::Bases_t<Reference_t*>(state).OR(bases, false);
+        }
+
+        return *state.Results();
+    }
+
+    Vector_t<Reference_t*> References_t::Filter_Collision_Layer_Types(Vector_t<Reference_t*> refs,
+                                                                      Vector_t<Collision_Layer_Type_e> collision_layer_types,
+                                                                      String_t mode)
+    {
+        Vector_t<Reference_t*>& read = refs;
+        Vector_t<Reference_t*> write;
+        write.reserve(read.size() / 2);
+
+        Filter::State_c<Reference_t*> state(&read, &write);
+
+        Vector_t<some<Collision_Layer_Type_e>> some_collision_layer_types;
+        for (size_t idx = 0, end = collision_layer_types.size(); idx < end; idx += 1) {
+            maybe<Collision_Layer_Type_e> collision_layer_type = collision_layer_types[idx];
+            if (collision_layer_type) {
+                some_collision_layer_types.push_back(collision_layer_type());
+            }
+        }
+
+        if (CString_t::Starts_With("!", mode, true)) {
+            Filter::Collision_Layer_Types_t<Reference_t*>(state).NOR<Vector_t<some<Collision_Layer_Type_e>>&>(some_collision_layer_types);
+        } else {
+            Filter::Collision_Layer_Types_t<Reference_t*>(state).OR<Vector_t<some<Collision_Layer_Type_e>>&>(some_collision_layer_types);
         }
 
         return *state.Results();
