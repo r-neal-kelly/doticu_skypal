@@ -30,9 +30,9 @@ int function Count_Enabled(ObjectReference[] refs) native global
         If (refs == none): Passes an empty array.
 /;
 
-; Changes how references collide in their environment. Works only on refs that currently have 3D.
-; If a ref is an actor, the setting will need to be reapplied more often, e.g. after enable.
-; Regular refs will have this setting stick as long as they have 3D (needs to be verified.)
+; Changes how references collide in their environment.
+; Works only on refs that currently have 3D. Does not work on the player.
+; If a ref is an actor, the setting will need to be reapplied more often, e.g. after they are enabled.
 ; if (collision_layer_type == invalid): Nothing is changed.
 function Change_Collision_Layer_Type(ObjectReference[] refs, int collision_layer_type) native global
 
