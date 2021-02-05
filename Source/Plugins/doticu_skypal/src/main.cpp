@@ -158,14 +158,14 @@ namespace doticu_skypal {
             return Consts_t::SkyPal::Current_Version() == version;
         } else if (CString_t::Is_Same("!=", mode, true)) {
             return Consts_t::SkyPal::Current_Version() != version;
-        } else if (CString_t::Is_Same("<", mode, true)) {
-            return Consts_t::SkyPal::Current_Version() < version;
-        } else if (CString_t::Is_Same(">", mode, true)) {
-            return Consts_t::SkyPal::Current_Version() > version;
         } else if (CString_t::Is_Same("<=", mode, true)) {
             return Consts_t::SkyPal::Current_Version() <= version;
         } else if (CString_t::Is_Same(">=", mode, true)) {
             return Consts_t::SkyPal::Current_Version() >= version;
+        } else if (CString_t::Is_Same("<", mode, true)) {
+            return Consts_t::SkyPal::Current_Version() < version;
+        } else if (CString_t::Is_Same(">", mode, true)) {
+            return Consts_t::SkyPal::Current_Version() > version;
         } else {
             return Consts_t::SkyPal::Current_Version() == version;
         }
