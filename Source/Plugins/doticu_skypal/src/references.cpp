@@ -4,6 +4,7 @@
 
 #include <algorithm>
 
+#include "doticu_skylib/enum_form_type.h"
 #include "doticu_skylib/enum_logic_gate.h"
 #include "doticu_skylib/enum_operator.h"
 
@@ -12,7 +13,6 @@
 #include "doticu_skylib/form.h"
 #include "doticu_skylib/form_factory.h"
 #include "doticu_skylib/form_list.h"
-#include "doticu_skylib/form_type.h"
 #include "doticu_skylib/game.inl"
 #include "doticu_skylib/keyword.h"
 #include "doticu_skylib/os.h"
@@ -137,40 +137,28 @@ namespace doticu_skypal {
 
     void References_t::Disable(Vector_t<Reference_t*> refs)
     {
-        maybe<Form_Factory_i*> script_factory = Form_Factory_i::Form_Factory(Form_Type_e::SCRIPT);
-        if (script_factory) {
-            maybe<Script_t*> script = static_cast<Script_t*>(script_factory->Create());
-            if (script) {
-                script->Command("Disable");
-                for (size_t idx = 0, end = refs.size(); idx < end; idx += 1) {
-                    maybe<Reference_t*> ref = refs[idx];
-                    if (ref) { // check if valid, deleted?
-                        script->Execute(ref());
-                    }
-                }
-                script->Deallocate_Command();
-                Game_t::Deallocate<Script_t>(script());
+        some<Script_t*> script = Script_t::Create();
+        script->Command("Disable");
+        for (size_t idx = 0, end = refs.size(); idx < end; idx += 1) {
+            maybe<Reference_t*> ref = refs[idx];
+            if (ref) { // check if valid, deleted?
+                script->Execute(ref());
             }
         }
+        Script_t::Destroy(script);
     }
 
     void References_t::Enable(Vector_t<Reference_t*> refs)
     {
-        maybe<Form_Factory_i*> script_factory = Form_Factory_i::Form_Factory(Form_Type_e::SCRIPT);
-        if (script_factory) {
-            maybe<Script_t*> script = static_cast<Script_t*>(script_factory->Create());
-            if (script) {
-                script->Command("Enable");
-                for (size_t idx = 0, end = refs.size(); idx < end; idx += 1) {
-                    maybe<Reference_t*> ref = refs[idx];
-                    if (ref) { // check if valid, deleted?
-                        script->Execute(ref());
-                    }
-                }
-                script->Deallocate_Command();
-                Game_t::Deallocate<Script_t>(script());
+        some<Script_t*> script = Script_t::Create();
+        script->Command("Enable");
+        for (size_t idx = 0, end = refs.size(); idx < end; idx += 1) {
+            maybe<Reference_t*> ref = refs[idx];
+            if (ref) { // check if valid, deleted?
+                script->Execute(ref());
             }
         }
+        Script_t::Destroy(script);
     }
 
     /* Filters */
