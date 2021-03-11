@@ -30,8 +30,6 @@ namespace doticu_skypal {
 
     template <typename T>
     using Vector_t                  = skylib::Vector_t<T>;
-    template <typename T>
-    using Buffer_t                  = skylib::Buffer_t<T>;
 
     template <typename T>
     using some                      = skylib::some<T>;
