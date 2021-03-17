@@ -175,7 +175,7 @@ namespace doticu_skypal {
 
         Vector_t<some<Form_Type_e>>& some_form_types = Main_t::Validate_Form_Types(form_types);
 
-        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode.data);
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode);
         if (logic_gate == Logic_Gate_e::NOT) {
             Filter::Base_Form_Types_t<Reference_t*>(state).NOR<Vector_t<some<Form_Type_e>>&>(some_form_types);
         } else {
@@ -195,7 +195,7 @@ namespace doticu_skypal {
 
         Filter::State_c<Reference_t*> state(&read, &write);
 
-        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode.data);
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode);
         if (logic_gate == Logic_Gate_e::NOT) {
             Filter::Bases_t<Reference_t*>(state).OR(bases, true);
         } else {
@@ -260,7 +260,7 @@ namespace doticu_skypal {
 
         Filter::State_c<Reference_t*> state(&read, &write);
 
-        Operator_e operator_e = Operator_e::From_String(mode.data);
+        Operator_e operator_e = Operator_e::From_String(mode);
         if (operator_e == Operator_e::GREATER_THAN) {
             Filter::Distances_t<Reference_t*>(state).GREATER_THAN(distance, from, false);
         } else {
@@ -300,7 +300,7 @@ namespace doticu_skypal {
 
         Vector_t<some<Form_Type_e>>& some_form_types = Main_t::Validate_Form_Types(form_types);
 
-        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode.data);
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode);
         if (logic_gate == Logic_Gate_e::NOT) {
             Filter::Form_Types_t<Reference_t*>(state).NOR<Vector_t<some<Form_Type_e>>&>(some_form_types);
         } else {
@@ -322,7 +322,7 @@ namespace doticu_skypal {
 
         Vector_t<some<Keyword_t*>>& some_keywords = Main_t::Validate_Formables(keywords);
 
-        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode.data);
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode);
         if (logic_gate == Logic_Gate_e::OR) {
             Filter::Keywords_t<Reference_t*>(state).OR<Vector_t<some<Keyword_t*>>&>(some_keywords);
         } else if (logic_gate == Logic_Gate_e::AND) {
@@ -354,7 +354,7 @@ namespace doticu_skypal {
 
         Vector_t<some<Actor_t*>>& some_owners = Main_t::Validate_Formables(owners);
 
-        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode.data);
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode);
         if (logic_gate == Logic_Gate_e::OR) {
             Filter::Owners_t<Reference_t*>(state).OR<Vector_t<some<Actor_t*>>&>(some_owners);
         } else if (logic_gate == Logic_Gate_e::AND) {
@@ -386,7 +386,7 @@ namespace doticu_skypal {
 
         Vector_t<some<Actor_t*>>& some_potential_thieves = Main_t::Validate_Formables(potential_thieves);
 
-        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode.data);
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode);
         if (logic_gate == Logic_Gate_e::OR) {
             Filter::Potential_Thieves_t<Reference_t*>(state).OR<Vector_t<some<Actor_t*>>&>(some_potential_thieves);
         } else if (logic_gate == Logic_Gate_e::AND) {
@@ -417,7 +417,7 @@ namespace doticu_skypal {
         some<Reference_t*> some_from = from && from->Is_Valid() ?
             from : static_cast<some<Reference_t*>>(Player_t::Self());
 
-        Operator_e operator_e = Operator_e::From_String(mode.data);
+        Operator_e operator_e = Operator_e::From_String(mode);
         if (operator_e == Operator_e::GREATER_THAN) {
             class Distance_Comparator_t
             {

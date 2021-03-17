@@ -41,7 +41,7 @@ namespace doticu_skypal {
         Vector_t<some<Form_t*>> some_bases;
         some_bases.reserve(some_ref_count);
 
-        Operator_e operator_e = Operator_e::From_String(mode.data);
+        Operator_e operator_e = Operator_e::From_String(mode);
         if (operator_e == Operator_e::ELLIPSIS) {
             for (size_t idx = 0, end = some_ref_count; idx < end; idx += 1) {
                 some<Reference_t*> ref = some_refs[idx];
