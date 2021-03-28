@@ -26,7 +26,6 @@ namespace doticu_skypal {
     using CString_t                 = skylib::CString_t;
 
     using Word_t                    = skylib::Word_t;
-    using Index_t                   = skylib::Index_t;
 
     template <typename T>
     using Vector_t                  = skylib::Vector_t<T>;
