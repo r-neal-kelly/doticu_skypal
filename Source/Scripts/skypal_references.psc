@@ -53,9 +53,10 @@ function Enable(ObjectReference[] refs) native global
 ; if (mode == "!"): Passes all refs that do not have a base type in the list.
 ObjectReference[] function Filter_Base_Form_Types(ObjectReference[] refs, int[] form_types, string mode = "") native global
 
-; if (bases == none, invalid): Uses an empty form list.
+; if (bases == none, invalid): Uses an empty list.
 ; if (mode == ""): Passes all refs that have a base in the list.
 ; if (mode == "!"): Passes all refs that do not have a base in the list.
+ObjectReference[] function Filter_Bases(ObjectReference[] refs, Form[] bases, string mode = "") native global
 ObjectReference[] function Filter_Bases_Form_List(ObjectReference[] refs, FormList bases, string mode = "") native global
 
 ; if (collision_layer_types == none): Uses an empty array.
@@ -124,3 +125,17 @@ ObjectReference[] function Filter_Potential_Thieves(ObjectReference[] refs, Acto
 ; if (mode == "<"): Sorts from closer to farther distance.
 ; if (mode == ">"): Sorts from farther to closer distance.
 ObjectReference[] function Sort_Distance(ObjectReference[] refs, ObjectReference from = none, string mode = "<") native global
+
+
+
+;/
+    Combiners:
+        Some efficient combinations which can save time and memory. Check previous signatures for instructions.
+        Getter + Filter combiners can avoid the unnecessary creation of script objects. Highly recommended.
+/;
+
+ObjectReference[] function All_Filter_Bases(Form[] bases, string mode = "") native global
+ObjectReference[] function All_Filter_Bases_Form_List(FormList bases, string mode = "") native global
+
+ObjectReference[] function Grid_Filter_Bases(Form[] bases, string mode = "") native global
+ObjectReference[] function Grid_Filter_Bases_Form_List(FormList bases, string mode = "") native global

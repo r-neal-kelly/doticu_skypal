@@ -64,6 +64,7 @@ namespace doticu_skypal {
         STATIC("Enable", false, void, Enable, Vector_t<Reference_t*>);
 
         STATIC("Filter_Base_Form_Types", false, Vector_t<Reference_t*>, Filter_Base_Form_Types, Vector_t<Reference_t*>, Vector_t<Form_Type_e>, String_t);
+        STATIC("Filter_Bases", false, Vector_t<Reference_t*>, Filter_Bases, Vector_t<Reference_t*>, Vector_t<Form_t*>, String_t);
         STATIC("Filter_Bases_Form_List", false, Vector_t<Reference_t*>, Filter_Bases_Form_List, Vector_t<Reference_t*>, Form_List_t*, String_t);
         STATIC("Filter_Collision_Layer_Types", false, Vector_t<Reference_t*>, Filter_Collision_Layer_Types, Vector_t<Reference_t*>, Vector_t<Collision_Layer_Type_e>, String_t);
         STATIC("Filter_Deleted", false, Vector_t<Reference_t*>, Filter_Deleted, Vector_t<Reference_t*>, String_t);
@@ -75,6 +76,11 @@ namespace doticu_skypal {
         STATIC("Filter_Potential_Thieves", false, Vector_t<Reference_t*>, Filter_Potential_Thieves, Vector_t<Reference_t*>, Vector_t<Actor_t*>, String_t);
 
         STATIC("Sort_Distance", false, Vector_t<Reference_t*>, Sort_Distance, Vector_t<Reference_t*>, Reference_t*, String_t);
+
+        STATIC("All_Filter_Bases", false, Vector_t<Reference_t*>, All_Filter_Bases, Vector_t<Form_t*>, String_t);
+        STATIC("All_Filter_Bases_Form_List", false, Vector_t<Reference_t*>, All_Filter_Bases_Form_List, Form_List_t*, String_t);
+        STATIC("Grid_Filter_Bases", false, Vector_t<Reference_t*>, Grid_Filter_Bases, Vector_t<Form_t*>, String_t);
+        STATIC("Grid_Filter_Bases_Form_List", false, Vector_t<Reference_t*>, Grid_Filter_Bases_Form_List, Form_List_t*, String_t);
 
         #undef STATIC
     }
@@ -180,6 +186,28 @@ namespace doticu_skypal {
             Filter::Base_Form_Types_t<Reference_t*>(state).NOR<Vector_t<some<Form_Type_e>>&>(some_form_types);
         } else {
             Filter::Base_Form_Types_t<Reference_t*>(state).OR<Vector_t<some<Form_Type_e>>&>(some_form_types);
+        }
+
+        return *state.Results();
+    }
+
+    Vector_t<Reference_t*> References_t::Filter_Bases(Vector_t<Reference_t*> refs,
+                                                      Vector_t<Form_t*> bases,
+                                                      String_t mode)
+    {
+        Vector_t<Reference_t*>& read = refs;
+        Vector_t<Reference_t*> write;
+        write.reserve(read.size() / 2);
+
+        Filter::State_c<Reference_t*> state(&read, &write);
+
+        Vector_t<some<Form_t*>>& some_bases = Main_t::Validate_Formables(bases);
+
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode);
+        if (logic_gate == Logic_Gate_e::NOT) {
+            Filter::Bases_t<Reference_t*>(state).OR<Vector_t<some<Form_t*>>&>(some_bases, true);
+        } else {
+            Filter::Bases_t<Reference_t*>(state).OR<Vector_t<some<Form_t*>>&>(some_bases, false);
         }
 
         return *state.Results();
@@ -453,6 +481,28 @@ namespace doticu_skypal {
         }
 
         return *reinterpret_cast<Vector_t<Reference_t*>*>(&some_refs);
+    }
+
+    /* Combiners */
+
+    Vector_t<Reference_t*> References_t::All_Filter_Bases(Vector_t<Form_t*> bases, String_t mode)
+    {
+        return Filter_Bases(std::move(All()), std::move(bases), mode);
+    }
+
+    Vector_t<Reference_t*> References_t::All_Filter_Bases_Form_List(Form_List_t* bases, String_t mode)
+    {
+        return Filter_Bases_Form_List(std::move(All()), bases, mode);
+    }
+
+    Vector_t<Reference_t*> References_t::Grid_Filter_Bases(Vector_t<Form_t*> bases, String_t mode)
+    {
+        return Filter_Bases(std::move(Grid()), std::move(bases), mode);
+    }
+
+    Vector_t<Reference_t*> References_t::Grid_Filter_Bases_Form_List(Form_List_t* bases, String_t mode)
+    {
+        return Filter_Bases_Form_List(std::move(Grid()), bases, mode);
     }
 
 }
