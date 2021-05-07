@@ -36,10 +36,6 @@
 #include "doticu_skypal/main.h"
 #include "doticu_skypal/references.h"
 
-//temp
-#include "doticu_skylib/virtual_debug.h"
-//
-
 namespace doticu_skypal {
 
     String_t References_t::Class_Name()
@@ -88,32 +84,6 @@ namespace doticu_skypal {
 
         #undef STATIC
     }
-
-    //temp
-    void Test_For_Dupes(Vector_t<Reference_t*>& refs)
-    {
-        for (size_t idx = 0, end = refs.size(); idx < end; idx += 1) {
-            maybe<Reference_t*> reference = refs[idx];
-            SKYLIB_ASSERT_SOME(reference);
-
-            size_t count = 0;
-            for (size_t idx = 0, end = refs.size(); idx < end; idx += 1) {
-                if (refs[idx] == reference) {
-                    count += 1;
-                }
-            }
-
-            if (count > 1) {
-                std::string note =
-                    std::string("SkyPal: FOUND A DUPLICATE") +
-                    " [" + reference->form_id.As_String() + " - " + reference->Any_Name() + "]";
-                skylib::Virtual::Debug_t::Trace(note, 2, none<V::Callback_i*>());
-            } else {
-                skylib::Virtual::Debug_t::Trace("SkyPal: no duplicates found.", 0, none<V::Callback_i*>());
-            }
-        }
-    }
-    //
 
     /* Getters */
 
@@ -396,10 +366,6 @@ namespace doticu_skypal {
         } else {
             Filter::Keywords_t<Reference_t*>(state).OR<Vector_t<some<Keyword_t*>>&>(some_keywords);
         }
-
-        //temp
-        Test_For_Dupes(*state.Results());
-        //
 
         return *state.Results();
     }
