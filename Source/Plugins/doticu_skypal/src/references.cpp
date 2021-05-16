@@ -89,12 +89,12 @@ namespace doticu_skypal {
 
     Vector_t<Reference_t*> References_t::All()
     {
-        return *reinterpret_cast<Vector_t<Reference_t*>*>(&Reference_t::All());
+        return *reinterpret_cast<Vector_t<Reference_t*>*>(&Reference_t::All_References());
     }
 
     Vector_t<Reference_t*> References_t::Grid()
     {
-        return *reinterpret_cast<Vector_t<Reference_t*>*>(&Reference_t::Grid());
+        return *reinterpret_cast<Vector_t<Reference_t*>*>(&Reference_t::Grid_References());
     }
 
     /* Counters */
