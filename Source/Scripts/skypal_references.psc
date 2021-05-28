@@ -14,6 +14,9 @@ ObjectReference[] function All() native global
 ; This is your go-to method to start your filter, as it's more performant to work with less refs.
 ObjectReference[] function Grid() native global
 
+; Gets all refs that are currently in the container. Only gathers references that exist.
+ObjectReference[] function From_Container(ObjectReference container) native global
+
 
 
 ;/

@@ -19,6 +19,7 @@ namespace doticu_skypal {
     public:
         static Vector_t<Reference_t*>   All();
         static Vector_t<Reference_t*>   Grid();
+        static Vector_t<Reference_t*>   From_Container(Reference_t* container);
 
     public:
         static Int_t                    Count_Disabled(Vector_t<Reference_t*> refs);

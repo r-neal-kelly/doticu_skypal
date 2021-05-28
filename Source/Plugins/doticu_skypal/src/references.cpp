@@ -55,6 +55,7 @@ namespace doticu_skypal {
 
         STATIC("All", false, Vector_t<Reference_t*>, All);
         STATIC("Grid", false, Vector_t<Reference_t*>, Grid);
+        STATIC("From_Container", false, Vector_t<Reference_t*>, From_Container, Reference_t*);
 
         STATIC("Count_Disabled", false, Int_t, Count_Disabled, Vector_t<Reference_t*>);
         STATIC("Count_Enabled", false, Int_t, Count_Enabled, Vector_t<Reference_t*>);
@@ -95,6 +96,15 @@ namespace doticu_skypal {
     Vector_t<Reference_t*> References_t::Grid()
     {
         return *reinterpret_cast<Vector_t<Reference_t*>*>(&Reference_t::Grid_References());
+    }
+
+    Vector_t<Reference_t*> References_t::From_Container(Reference_t* container)
+    {
+        if (container) {
+            return *reinterpret_cast<Vector_t<Reference_t*>*>(&container->Contained_References());
+        } else {
+            return Vector_t<Reference_t*>();
+        }
     }
 
     /* Counters */
@@ -181,7 +191,7 @@ namespace doticu_skypal {
 
         Vector_t<some<Form_Type_e>>& some_form_types = Main_t::Validate_Form_Types(form_types);
 
-        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode);
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_Symbol(mode, true);
         if (logic_gate == Logic_Gate_e::NOT) {
             Filter::Base_Form_Types_t<Reference_t*>(state).NOR<Vector_t<some<Form_Type_e>>&>(some_form_types);
         } else {
@@ -203,7 +213,7 @@ namespace doticu_skypal {
 
         Vector_t<some<Form_t*>>& some_bases = Main_t::Validate_Formables(bases);
 
-        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode);
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_Symbol(mode, true);
         if (logic_gate == Logic_Gate_e::NOT) {
             Filter::Bases_t<Reference_t*>(state).OR<Vector_t<some<Form_t*>>&>(some_bases, true);
         } else {
@@ -223,7 +233,7 @@ namespace doticu_skypal {
 
         Filter::State_c<Reference_t*> state(&read, &write);
 
-        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode);
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_Symbol(mode, true);
         if (logic_gate == Logic_Gate_e::NOT) {
             Filter::Bases_t<Reference_t*>(state).OR(bases, true);
         } else {
@@ -328,7 +338,7 @@ namespace doticu_skypal {
 
         Vector_t<some<Form_Type_e>>& some_form_types = Main_t::Validate_Form_Types(form_types);
 
-        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode);
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_Symbol(mode, true);
         if (logic_gate == Logic_Gate_e::NOT) {
             Filter::Form_Types_t<Reference_t*>(state).NOR<Vector_t<some<Form_Type_e>>&>(some_form_types);
         } else {
@@ -350,7 +360,7 @@ namespace doticu_skypal {
 
         Vector_t<some<Keyword_t*>>& some_keywords = Main_t::Validate_Formables(keywords);
 
-        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode);
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_Symbol(mode, true);
         if (logic_gate == Logic_Gate_e::OR) {
             Filter::Keywords_t<Reference_t*>(state).OR<Vector_t<some<Keyword_t*>>&>(some_keywords);
         } else if (logic_gate == Logic_Gate_e::AND) {
@@ -382,7 +392,7 @@ namespace doticu_skypal {
 
         Vector_t<some<Actor_t*>>& some_owners = Main_t::Validate_Formables(owners);
 
-        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode);
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_Symbol(mode, true);
         if (logic_gate == Logic_Gate_e::OR) {
             Filter::Owners_t<Reference_t*>(state).OR<Vector_t<some<Actor_t*>>&>(some_owners);
         } else if (logic_gate == Logic_Gate_e::AND) {
@@ -414,7 +424,7 @@ namespace doticu_skypal {
 
         Vector_t<some<Actor_t*>>& some_potential_thieves = Main_t::Validate_Formables(potential_thieves);
 
-        Logic_Gate_e logic_gate = Logic_Gate_e::From_String(mode);
+        Logic_Gate_e logic_gate = Logic_Gate_e::From_Symbol(mode, true);
         if (logic_gate == Logic_Gate_e::OR) {
             Filter::Potential_Thieves_t<Reference_t*>(state).OR<Vector_t<some<Actor_t*>>&>(some_potential_thieves);
         } else if (logic_gate == Logic_Gate_e::AND) {
