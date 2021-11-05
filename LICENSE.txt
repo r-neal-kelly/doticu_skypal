@@ -4,6 +4,11 @@ https://github.com/r-neal-kelly/doticu-skypal
 Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
 https://creativecommons.org/licenses/by-nc-sa/4.0/
 
+**UPDATE**
+As of 11/4/2021, I'm adding an exception to the license below. No one shall upload
+this mod on https://www.nexusmods.com/ without my explicit written permission.
+**********
+
 (Please make sure to read the actual license, as my comments are not a substitute.)
 The "Attribution-NonCommercial-ShareAlike 4.0 International" license allows you to 
 modify, update, port, and reupload my mod anywhere at anytime. To do so, you must 
